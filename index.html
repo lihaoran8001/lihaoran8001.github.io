@@ -7,8 +7,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.jpeg">
+  <link rel="icon" href="/img/fluid.jpeg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -77,7 +77,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>DEAD_BEEF</strong>
+      <strong>1nt3rva1</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -178,7 +178,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="An elegant and tough guy&#39;s wonderland"></span>
+            <span id="subtitle" data-typed-text="A tough guy&#39;s wonderland."></span>
           
         </div>
 
@@ -216,15 +216,76 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/04/15/WebSec/" target="_self">
+        <a href="/2022/04/17/CSRF/" target="_self">
+          CSRF vulnerability
+        </a>
+      </h1>
+
+      <a class="index-excerpt" href="/2022/04/17/CSRF/" target="_self">
+        <div>
+          
+          跨域请求伪造（CSRF: Cross-Site Request Forgery）漏洞介绍与之前介绍的XSS漏洞不同，想要触发CSRF漏洞，需要两个条件。第一，用户已经登陆一个受信任的网站，例如http:&#x2F;&#x2F;www.a.com，并生成了cookie（并不一定需要打开这个tag页，有一些cookie并不是关闭页面以后立即过期的）。第二，需要攻击者诱导用户在不退出第一个网站的前提下点击一个恶意的链接，例
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-04-17 19:54" pubdate>
+              2022-04-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/WebSecurity/" class="category-chain-item">WebSecurity</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Web%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BB%8B%E7%BB%8D/">#Web安全漏洞介绍</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/04/15/XSS/" target="_self">
           XSS vulnerability
         </a>
       </h1>
 
-      <a class="index-excerpt" href="/2022/04/15/WebSec/" target="_self">
+      <a class="index-excerpt" href="/2022/04/15/XSS/" target="_self">
         <div>
           
-          跨站脚本攻击（XSS）漏洞介绍很多Web应用需要将用户的输入显示在后续的页面中。例如，我们注册一个账号，其中昵称&#x2F;用户名将会显示在登陆后的页面中。 对于任何将用户输入作为返回用户的页面上的用来显示的地方，均有可能产生XSS。其本质是用户的输入本应该作为数据的一部分，但是在一些特殊情况下恶意构造的输入不再被当作数据显示，而是被当作一段代码被客户端的浏览器执行。 XSS的利用可以做到jav
+          跨站脚本攻击（XSS: Cross-Site Script）漏洞介绍从名称上来看，这个漏洞似乎和跨站有关系，但其实这是对其命名时的历史原因，跨不跨站的已经无所谓了，重要的是脚本会被执行。 出现的原因：很多Web应用需要将用户的输入显示在后续的页面中。例如，我们在某某hub网站注册一个账号，其中你的昵称&#x2F;用户名将会显示在登陆后的页面中。 对于任何将用户输入作为返回用户的页面上的用来显示的
         </div>
       </a>
 
