@@ -16,24 +16,20 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="ELF文件结构分析ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。 从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始">
+    <meta name="description" content="Personal Blog of Haoran">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ELF文件结构">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/index.html">
+<meta property="og:title" content="https_and_mitm">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/01/https-and-mitm/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="ELF文件结构分析ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。 从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始">
+<meta property="og:description" content="Personal Blog of Haoran">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/SHT.png">
-<meta property="og:image" content="https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/PHT.png">
-<meta property="article:published_time" content="2022-07-01T08:42:42.000Z">
-<meta property="article:modified_time" content="2022-07-01T14:49:49.424Z">
+<meta property="article:published_time" content="2022-07-01T14:48:01.000Z">
+<meta property="article:modified_time" content="2022-07-01T14:48:01.156Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="二进制安全总结">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/SHT.png">
   
   
-  <title>ELF文件结构 - 1nt3rva1&#39;s personal blog</title>
+  <title>https_and_mitm - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -190,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="ELF文件结构"></span>
+            <span id="subtitle" data-typed-text="https_and_mitm"></span>
           
         </div>
 
@@ -201,8 +197,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-07-01 10:42" pubdate>
-          2022年7月1日 上午
+        <time datetime="2022-07-01 16:48" pubdate>
+          2022年7月1日 下午
         </time>
       </span>
     
@@ -213,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          511 字
+          0 字
         
       </span>
     
@@ -224,7 +220,7 @@
         
         
         
-          2 分钟
+          1 分钟
         
       </span>
     
@@ -270,52 +266,17 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">ELF文件结构</h1>
+            <h1 style="display: none">https_and_mitm</h1>
             
             <div class="markdown-body">
               
-              <h1 id="ELF文件结构分析"><a href="#ELF文件结构分析" class="headerlink" title="ELF文件结构分析"></a>ELF文件结构分析</h1><p>ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。</p>
-<p>从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始化的静态变量，.got用来存放全局偏移，包括全局变量的偏移和全局函数地址的偏移（调用外部函数时，通过这个偏移来找到真正的函数地址），.plt存放一段代码，启用lazy binding时，第一次调用外部函数会将具体的库进行装载，并且确定偏移至got表中，plt负责调用读取got中的偏移并进行跳转。</p>
-<img src="/2022/07/01/ELF-file-structure/SHT.png" srcset="/img/loading.gif" lazyload class="" title="Sections">
-
-<p>从装载视角来看，程序其实并不需要进行像Segment这样细粒度的分类也可以执行。所以程序头表（program header table）定义了一些Segment，不同的segment拥有不同的读写执行权限，拥有相同权限的section可能会被放在同一个segment中。在装载的时候，系统还需要进行页对齐，比如进行0x1000的补全。</p>
-<img src="/2022/07/01/ELF-file-structure/PHT.png" srcset="/img/loading.gif" lazyload class="" title="Segments">
-
-
+              
               
             </div>
             <hr/>
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Binary-Security/" class="category-chain-item">Binary Security</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">#二进制安全总结</a>
-      
-    </div>
   
 </div>
 
@@ -325,8 +286,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ELF文件结构</div>
-      <div>https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/</div>
+      <div>https_and_mitm</div>
+      <div>https://lihaoran8001.github.io/2022/07/01/https-and-mitm/</div>
     </div>
     <div class="license-meta">
       
@@ -368,18 +329,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/01/https-and-mitm/" title="https_and_mitm">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">https_and_mitm</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/06/28/binarySecurity/" title="栈溢出攻防博弈">
-                        <span class="hidden-mobile">栈溢出攻防博弈</span>
+                      <a href="/2022/07/01/ELF-file-structure/" title="ELF文件结构">
+                        <span class="hidden-mobile">ELF文件结构</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
