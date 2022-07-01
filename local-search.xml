@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>ELF_file_structure</title>
+    <link href="/2022/07/01/ELF-file-structure/"/>
+    <url>/2022/07/01/ELF-file-structure/</url>
+    
+    <content type="html"><![CDATA[<h1 id="ELF文件结构分析"><a href="#ELF文件结构分析" class="headerlink" title="ELF文件结构分析"></a>ELF文件结构分析</h1><p>ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。</p><p>从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始化的静态变量，.got用来存放全局偏移，包括全局变量的偏移和全局函数地址的偏移（调用外部函数时，通过这个偏移来找到真正的函数地址），.plt存放一段代码，启用lazy binding时，第一次调用外部函数会将具体的库进行装载，并且确定偏移至got表中，plt负责调用读取got中的偏移并进行跳转。</p><p>从装载视角来看，程序其实并不需要进行像Segment这样细粒度的分类也可以执行。所以程序头表（program header table）定义了一些Segment，不同的segment拥有不同的读写执行权限，拥有相同权限的section可能会被放在同一个segment中。在装载的时候，系统还需要进行页对齐，比如进行0x1000的补全。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Binary Security</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>二进制安全总结</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>BinSec</title>
     <link href="/2022/06/28/binarySecurity/"/>
     <url>/2022/06/28/binarySecurity/</url>

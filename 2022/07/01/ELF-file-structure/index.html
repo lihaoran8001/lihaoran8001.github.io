@@ -16,21 +16,21 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="漏洞介绍1. 栈溢出漏洞在低级语言中使用一些内存操作函数（如strcpy, sprintf）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果">
+    <meta name="description" content="ELF文件结构分析ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。 从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BinSec">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/index.html">
+<meta property="og:title" content="ELF_file_structure">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="漏洞介绍1. 栈溢出漏洞在低级语言中使用一些内存操作函数（如strcpy, sprintf）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果">
+<meta property="og:description" content="ELF文件结构分析ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。 从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-06-28T15:30:20.527Z">
+<meta property="article:published_time" content="2022-07-01T08:42:42.000Z">
+<meta property="article:modified_time" content="2022-07-01T14:36:59.065Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="二进制安全总结">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>BinSec - 1nt3rva1&#39;s personal blog</title>
+  <title>ELF_file_structure - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="BinSec"></span>
+            <span id="subtitle" data-typed-text="ELF_file_structure"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-06-28 13:35" pubdate>
-          2022年6月28日 下午
+        <time datetime="2022-07-01 10:42" pubdate>
+          2022年7月1日 上午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k 字
+          511 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          6 分钟
+          2 分钟
         
       </span>
     
@@ -267,38 +267,17 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">BinSec</h1>
+            <h1 style="display: none">ELF_file_structure</h1>
             
             <div class="markdown-body">
               
-              <h1 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h1><h3 id="1-栈溢出漏洞"><a href="#1-栈溢出漏洞" class="headerlink" title="1. 栈溢出漏洞"></a>1. 栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>strcpy</code>, <code>sprintf</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
-<h4 id="攻防博弈"><a href="#攻防博弈" class="headerlink" title="攻防博弈"></a>攻防博弈</h4><p>攻击：</p>
-<ol>
-<li>（Ret2Shellcode）攻击者在栈里面布置一段shellcode（原意是可以开启一个shell的代码，其实可以是任意恶意代码的机器码），并修改返回地址，让其指向这段shellcode的开头，当函数执行结束时，会跳转到这段代码开始执行，从而实现RCE（任意代码执行）。这个攻击的条件是，要保证函数返回前，被覆盖的栈中内存不会导致程序崩溃（要顺利执行到函数返回的地方）。</li>
-</ol>
-<p>防御：</p>
-<ol>
-<li>针对攻击1。栈随机化（ASLR：Address space layout randomization）。就是每一次运行相同的程序，他的栈的base位置是随机的，这将导致攻击者无法确定其放在栈里面的shellcode的位置（不知道返回地址那一栏该写什么）。其实ASLR有三个等级。等级为0时，完全没有随机。为1时，将mmap基址、栈随机化，从而库地址、vdso页面也会被随机化。等级为2时，堆也会被随机化。</li>
-<li>针对攻击1。金丝雀值（CANARY）。就是在栈中的变量和返回地址之间放一个随机值，每次函数调用都会产生一个新的随机值，当函数返回时，要检查一下这个值是不是正确。由于攻击者不知道CANARY值，所以没法伪造，系统可以通过这个值来确定栈是不是被破坏过。如果CANARY值不对，就不返回了，会跳到异常处理部分，而攻击者的代码也不会被执行。</li>
-<li>针对攻击1。栈不可执行（NX: Non-executable Stack）。栈里面应该存放的都是数据，正常的流程下，PC指针是不会跳到栈里面去执行的。所以当PC进入栈区时，NX会被触发而中断攻击流程。</li>
-</ol>
-<p>攻击：</p>
-<ol start="2">
-<li>针对防御1。ASLR不会将代码段进行随机，所以可以尝试跳转到代码段（内存中任何没有被随机化的地方），利用已有的代码完成一些恶意操作。</li>
-<li>针对防御1。利用别的地方泄漏装载地址&#x2F;栈基址。</li>
-<li>针对防御1。如果没有开启NX的话，并且如果我们可以覆盖很长一段栈空间，那我们可以在shellcode前面先写很长一段废指令，比如nop。如果返回地址命中了这个长长的滑动窗口，那最终会执行到我们的shellcode。这样做可以增加命中的概率。</li>
-<li>针对防御1。不直接覆盖返回地址，而是利用可以控制的栈中存放的数据来完成对返回地址的修改。这个需要看从溢出到返回之间有没有可以通过修改数据来影响到返回地址&#x2F;栈指针的操作。具体情况要具体分析。</li>
-<li>针对防御2。通过别的函数泄漏canary值。</li>
-<li>针对防御2。数组指针越界型可以只修改返回地址，不需要连续覆盖。</li>
-<li>针对防御2。当系统检测到canary值被修改时，会调用stack_check_fail函数，阻断程序继续执行，如果我们可以想办法劫持这个函数指针(劫持GOT表)，从而执行我们所指定的函数&#x2F;shellcode。</li>
-<li>针对防御3。可以尝试到堆区执行。或者可以跳转到代码区&#x2F;装载的共享库区执行代码(Ret2libc)。</li>
-<li>针对防御3。ROP(Return-Oriented Programming)。就是在栈中布置一些地址。这些地址对应的代码片段gadget都是以ret结束的，所以多个这样的片段可能可以满足图灵完备性，例如libc里面的代码段。</li>
-</ol>
-<p>防御：</p>
-<ol start="4">
-<li>针对攻击2。开启PIE以后，代码段和数据段的地址也会被随机化。</li>
-<li>针对攻击8。开启完全RELRO，在程序启动时就绑定所有动态符号，GOT不可写。</li>
-</ol>
+              <h1 id="ELF文件结构分析"><a href="#ELF文件结构分析" class="headerlink" title="ELF文件结构分析"></a>ELF文件结构分析</h1><p>ELF文件包括linux下的可执行文件，共享链接库等等。ELF文件的结构可以有两个平行的视角，一个是链接的视角，一个是装载的视角。</p>
+<p>从链接视角来看，ELF文件被分成了不同的节区（Section），每一个节区用来存放不同的数据，比如.text段一般用来存放指令&#x2F;代码，.data用来存放已初始化的静态变量，.rodata用来存放只读变量（const），.bss用来存放未初始化的静态变量，.got用来存放全局偏移，包括全局变量的偏移和全局函数地址的偏移（调用外部函数时，通过这个偏移来找到真正的函数地址），.plt存放一段代码，启用lazy binding时，第一次调用外部函数会将具体的库进行装载，并且确定偏移至got表中，plt负责调用读取got中的偏移并进行跳转。</p>
+
+
+<p>从装载视角来看，程序其实并不需要进行像Segment这样细粒度的分类也可以执行。所以程序头表（program header table）定义了一些Segment，不同的segment拥有不同的读写执行权限，拥有相同权限的section可能会被放在同一个segment中。在装载的时候，系统还需要进行页对齐，比如进行0x1000的补全。</p>
+
+
 
               
             </div>
@@ -343,8 +322,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>BinSec</div>
-      <div>https://lihaoran8001.github.io/2022/06/28/binarySecurity/</div>
+      <div>ELF_file_structure</div>
+      <div>https://lihaoran8001.github.io/2022/07/01/ELF-file-structure/</div>
     </div>
     <div class="license-meta">
       
@@ -356,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年6月28日</div>
+          <div>2022年7月1日</div>
         </div>
       
       
@@ -386,18 +365,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/01/ELF-file-structure/" title="ELF_file_structure">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ELF_file_structure</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/17/CSRF/" title="CSRF vulnerability">
-                        <span class="hidden-mobile">CSRF vulnerability</span>
+                      <a href="/2022/06/28/binarySecurity/" title="BinSec">
+                        <span class="hidden-mobile">BinSec</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
