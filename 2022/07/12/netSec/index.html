@@ -16,23 +16,21 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="漏洞介绍栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密">
+    <meta name="description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
 <meta property="og:type" content="article">
-<meta property="og:title" content="栈溢出攻防博弈">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/index.html">
+<meta property="og:title" content="netSec">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/12/netSec/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="漏洞介绍栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密">
+<meta property="og:description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
-<meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-07-12T20:28:23.110Z">
+<meta property="article:published_time" content="2022-07-12T20:28:53.000Z">
+<meta property="article:modified_time" content="2022-07-12T20:37:31.156Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="二进制安全总结">
+<meta property="article:tag" content="network Security">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
   
   
-  <title>栈溢出攻防博弈 - 1nt3rva1&#39;s personal blog</title>
+  <title>netSec - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -189,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="栈溢出攻防博弈"></span>
+            <span id="subtitle" data-typed-text="netSec"></span>
           
         </div>
 
@@ -200,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-06-28 13:35" pubdate>
-          2022年6月28日 下午
+        <time datetime="2022-07-12 22:28" pubdate>
+          2022年7月12日 晚上
         </time>
       </span>
     
@@ -212,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          274 字
         
       </span>
     
@@ -223,7 +221,7 @@
         
         
         
-          9 分钟
+          1 分钟
         
       </span>
     
@@ -269,47 +267,22 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">栈溢出攻防博弈</h1>
+            <h1 style="display: none">netSec</h1>
             
             <div class="markdown-body">
               
-              <h1 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h1><h3 id="栈溢出漏洞"><a href="#栈溢出漏洞" class="headerlink" title="栈溢出漏洞"></a>栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>gets</code> , <code>scanf</code>, <code>vscanf</code>, <code>strcat</code>, <code>strcpy</code>, <code>sprintf</code>, <code>bcopy</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
-<h4 id="攻防博弈"><a href="#攻防博弈" class="headerlink" title="攻防博弈"></a>攻防博弈</h4><p>攻击：</p>
+              <h3 id="蠕虫病毒"><a href="#蠕虫病毒" class="headerlink" title="蠕虫病毒"></a>蠕虫病毒</h3><p>以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件</p>
 <ol>
-<li>（Ret2Shellcode）攻击者在栈里面布置一段shellcode（原意是可以开启一个shell的代码，其实可以是任意恶意代码的机器码），并修改返回地址，让其指向这段shellcode的开头，当函数执行结束时，会跳转到这段代码开始执行，从而实现RCE（任意代码执行）。这个攻击的条件是，要保证函数返回前，被覆盖的栈中内存不会导致程序崩溃（要顺利执行到函数返回的地方）。</li>
+<li>通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网）</li>
+<li>对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统）</li>
+<li>可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载恶意脚本）</li>
 </ol>
-<p>防御：</p>
+<p>更高明的蠕虫病毒可以实现：</p>
 <ol>
-<li>针对攻击1。栈随机化（ASLR：Address space layout randomization）。就是每一次运行相同的程序，他的栈的base位置是随机的，这将导致攻击者无法确定其放在栈里面的shellcode的位置（不知道返回地址那一栏该写什么）。其实ASLR有三个等级。等级为0时，完全没有随机。为1时，将mmap基址、栈随机化，从而库地址、vdso页面也会被随机化。等级为2时，堆也会被随机化。</li>
-<li>针对攻击1。金丝雀值（CANARY）。就是在栈中的变量和返回地址之间放一个随机值，每次函数调用都会产生一个新的随机值，当函数返回时，要检查一下这个值是不是正确。由于攻击者不知道CANARY值，所以没法伪造，系统可以通过这个值来确定栈是不是被破坏过。如果CANARY值不对，就不返回了，会跳到异常处理部分，而攻击者的代码也不会被执行。在linux中，会提示stack smashing detected，并且终止程序。</li>
-<li>针对攻击1。栈不可执行（NX: Non-executable Stack）。栈里面应该存放的都是数据，正常的流程下，PC指针是不会跳到栈里面去执行的。所以当PC进入栈区时，NX会被触发而中断攻击流程，会触发segmentation fault。这个特性在编译的时候可以通过一个选项开启，在ELF文件中的program header中的一个域被声明。</li>
+<li>拥有更高的传播效率，并且不被受害者发现</li>
+<li>可以实现判断下一个目标是否可达</li>
+<li>防止自我感染，也就是对已经感染过的目标不再进行二次感染</li>
 </ol>
-<p>攻击：</p>
-<ol start="2">
-<li>针对防御1。ASLR不会将代码段进行随机，所以可以尝试跳转到代码段（ret2text）（内存中任何没有被随机化的地方），利用已有的代码完成一些恶意操作。</li>
-<li>针对防御1。利用别的地方泄漏装载地址&#x2F;栈基址。</li>
-<li>针对防御1。如果没有开启NX的话，并且如果我们可以覆盖很长一段栈空间，那我们可以在shellcode前面先写很长一段废指令，比如nop。如果返回地址命中了这个长长的滑动窗口，那最终会执行到我们的shellcode。这样做可以增加命中的概率。</li>
-<li>针对防御1。不直接覆盖返回地址，而是利用可以控制的栈中存放的数据来完成对返回地址的修改。这个需要看从溢出到返回之间有没有可以通过修改数据来影响到返回地址&#x2F;栈指针的操作。具体情况要具体分析。</li>
-<li>针对防御2。通过别的函数泄漏canary值。</li>
-<li>针对防御2。数组指针越界型可以只修改返回地址，不需要连续覆盖。</li>
-<li>针对防御2。当系统检测到canary值被修改时，会调用stack_check_fail函数，阻断程序继续执行，如果我们可以想办法劫持这个函数指针(劫持GOT表)，从而执行我们所指定的函数&#x2F;shellcode。</li>
-<li>针对防御3。可以尝试到堆区执行。或者可以跳转到代码区&#x2F;装载的共享库区执行代码(Ret2libc)，在栈中布置好函数所需要的参数和以及返回地址等等。</li>
-<li>针对防御3。ROP(Return-Oriented Programming)。就是在栈中布置一些地址。这些地址对应的代码片段gadget都是以ret结束的，所以多个这样的片段可能可以满足图灵完备性，例如libc里面的代码段，这样可以实现跳转至任何函数并传入对应的参数。</li>
-<li>针对防御1。在32位的程序中，栈随机化有19bits的熵，所以栈的base共有2^19&#x3D;524,288种可能性，所以可以尝试暴力枚举方法。64位程序的栈随机化将会更难使用暴力枚举方法攻破。</li>
-</ol>
-<p>防御：</p>
-<ol start="4">
-<li>针对攻击2。开启PIE以后，代码段和数据段的地址也会被随机化。</li>
-<li>针对攻击8。开启完全RELRO，在程序启动时就绑定所有动态符号，GOT不可写。</li>
-</ol>
-<h3 id="格式化字符串漏洞"><a href="#格式化字符串漏洞" class="headerlink" title="格式化字符串漏洞"></a>格式化字符串漏洞</h3><p>一些函数在做输出的时候会用到格式化字符串，这个串规定了输出的格式等等。如果这个串可以被用户控制，那么恶意的用户可以通过构造这个串实现任意地址读取以及任意地址写入任意值。可以产生格式化字符串漏洞的函数有这些。</p>
-<img src="/2022/06/28/binarySecurity/fmtStr.png" srcset="/img/loading.gif" lazyload class="" title="危险函数">
-
-<p>这个漏洞的原理是，这些函数会维护一个参数指针，每遇到一个<code>%</code>，函数就会将这个指针向下移动并且将指针指向的内容解释为百分号所指定的格式。但是如果我们可以控制格式化字符串的话，我们就相当于可以控制这个指针，从而造成越界的读写。</p>
-<p>例如，我们可以通过向格式化字符串中写入很多 <code>%s</code> 来使得程序崩溃，因为函数会将参数指针指向的内容解释为一个地址，而寻找这个地址指向的字符串。当栈中的内容不是一个地址的时候就会造成段错误。</p>
-<p>我们还可以通过<code>%x</code>  <code>%p</code>，等等来以16进制&#x2F;指针的格式来打印出当前栈上的内容。</p>
-<p>我们可以使用<code>%n</code> 来对指针指向的地址进行写入，写入的值是已经打印出的字符长度数。例如，我们可以覆盖函数返回值从而劫持控制流。并且我们可以通过控制输出的位数（<code>%.12345x</code>）来实现写入任意值。也可以通过指定参数位置来避免输出过多内容如（<code>%2$.08x</code>）表明输出的是第二个参数，我们可以这样来随意移动参数指针。</p>
-<p>要注意的是，如果想要实现任意地址写入，那我们需要在栈上布置好我们要写入的内存地址，这样可以让格式化函数的参数指针移动到这个地址处进行写入。</p>
 
               
             </div>
@@ -317,32 +290,11 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Binary-Security/" class="category-chain-item">Binary Security</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">#二进制安全总结</a>
+        <a href="/tags/network-Security/">#network Security</a>
       
     </div>
   
@@ -354,8 +306,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>栈溢出攻防博弈</div>
-      <div>https://lihaoran8001.github.io/2022/06/28/binarySecurity/</div>
+      <div>netSec</div>
+      <div>https://lihaoran8001.github.io/2022/07/12/netSec/</div>
     </div>
     <div class="license-meta">
       
@@ -367,7 +319,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年6月28日</div>
+          <div>2022年7月12日</div>
         </div>
       
       
@@ -397,9 +349,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/01/ELF-file-structure/" title="ELF文件结构">
+                      <a href="/2022/07/12/toJing/" title="toJing">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ELF文件结构</span>
+                        <span class="hidden-mobile">toJing</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -407,8 +359,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/17/CSRF/" title="CSRF vulnerability">
-                        <span class="hidden-mobile">CSRF vulnerability</span>
+                      <a href="/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/" title="x86指令集简介">
+                        <span class="hidden-mobile">x86指令集简介</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
