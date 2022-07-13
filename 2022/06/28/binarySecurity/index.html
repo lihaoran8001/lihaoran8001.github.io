@@ -16,23 +16,23 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="漏洞介绍栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密">
+    <meta name="description" content="软件安全总结栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥">
 <meta property="og:type" content="article">
-<meta property="og:title" content="栈溢出攻防博弈">
+<meta property="og:title" content="SeftwareSec">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="漏洞介绍栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密">
+<meta property="og:description" content="软件安全总结栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
 <meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-07-12T20:28:23.110Z">
+<meta property="article:modified_time" content="2022-07-13T13:56:42.908Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="二进制安全总结">
+<meta property="article:tag" content="软件安全总结">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
   
   
-  <title>栈溢出攻防博弈 - 1nt3rva1&#39;s personal blog</title>
+  <title>SeftwareSec - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -189,7 +189,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="栈溢出攻防博弈"></span>
+            <span id="subtitle" data-typed-text="SeftwareSec"></span>
           
         </div>
 
@@ -212,7 +212,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.5k 字
+          4.1k 字
         
       </span>
     
@@ -223,7 +223,7 @@
         
         
         
-          9 分钟
+          14 分钟
         
       </span>
     
@@ -269,11 +269,11 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">栈溢出攻防博弈</h1>
+            <h1 style="display: none">SeftwareSec</h1>
             
             <div class="markdown-body">
               
-              <h1 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h1><h3 id="栈溢出漏洞"><a href="#栈溢出漏洞" class="headerlink" title="栈溢出漏洞"></a>栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>gets</code> , <code>scanf</code>, <code>vscanf</code>, <code>strcat</code>, <code>strcpy</code>, <code>sprintf</code>, <code>bcopy</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
+              <h1 id="软件安全总结"><a href="#软件安全总结" class="headerlink" title="软件安全总结"></a>软件安全总结</h1><h3 id="栈溢出漏洞"><a href="#栈溢出漏洞" class="headerlink" title="栈溢出漏洞"></a>栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>gets</code> , <code>scanf</code>, <code>vscanf</code>, <code>strcat</code>, <code>strcpy</code>, <code>sprintf</code>, <code>bcopy</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
 <h4 id="攻防博弈"><a href="#攻防博弈" class="headerlink" title="攻防博弈"></a>攻防博弈</h4><p>攻击：</p>
 <ol>
 <li>（Ret2Shellcode）攻击者在栈里面布置一段shellcode（原意是可以开启一个shell的代码，其实可以是任意恶意代码的机器码），并修改返回地址，让其指向这段shellcode的开头，当函数执行结束时，会跳转到这段代码开始执行，从而实现RCE（任意代码执行）。这个攻击的条件是，要保证函数返回前，被覆盖的栈中内存不会导致程序崩溃（要顺利执行到函数返回的地方）。</li>
@@ -310,6 +310,30 @@
 <p>我们还可以通过<code>%x</code>  <code>%p</code>，等等来以16进制&#x2F;指针的格式来打印出当前栈上的内容。</p>
 <p>我们可以使用<code>%n</code> 来对指针指向的地址进行写入，写入的值是已经打印出的字符长度数。例如，我们可以覆盖函数返回值从而劫持控制流。并且我们可以通过控制输出的位数（<code>%.12345x</code>）来实现写入任意值。也可以通过指定参数位置来避免输出过多内容如（<code>%2$.08x</code>）表明输出的是第二个参数，我们可以这样来随意移动参数指针。</p>
 <p>要注意的是，如果想要实现任意地址写入，那我们需要在栈上布置好我们要写入的内存地址，这样可以让格式化函数的参数指针移动到这个地址处进行写入。</p>
+<h3 id="环境变量和SetUid程序"><a href="#环境变量和SetUid程序" class="headerlink" title="环境变量和SetUid程序"></a>环境变量和SetUid程序</h3><h4 id="环境变量的传递："><a href="#环境变量的传递：" class="headerlink" title="环境变量的传递："></a>环境变量的传递：</h4><ol>
+<li>如果用 <code>fork</code> 函数创建一个子进程，那么父进程的环境变量会被子进程继承，只有在运行的进程名一项不同。</li>
+<li>如果使用 <code>execve</code> 函数来运行一个新的程序，需要通过第三个参数来吧环境变量传递进去，否则新的程序不会继承原程序的环境变量。</li>
+<li>如果使用 <code>system</code> 函数运行一个新的程序，在system函数的内部调用了 <code>execl</code> 和 <code>execve</code> 从而将当前程序的环境变量传递给了要执行的程序 <code>/bin/sh</code> ，进一步再通过 <code>fork</code> 传递至要运行的新程序中。</li>
+</ol>
+<h4 id="SetUID机制"><a href="#SetUID机制" class="headerlink" title="SetUID机制"></a>SetUID机制</h4><p>当一个程序的所有者是root时，普通用户去运行这个程序，这个程序也拥有root的运行权限，这可以帮助普通用户完成一些需要root权限的操作（例如访问&#x2F;etc&#x2F;passwd文件去修改密码），这些SetUID程序的逻辑都是规定好的，用户没有办法修改。但是用户可以通过修改环境变量来间接影响这些程序的行为。</p>
+<ol>
+<li><p>使用普通用户设置的环境变量，例如PATH，或者自定义的环境变量，运行SetUid程序时会被继承。但是LD_LIBARARY_PATH这类环境变量不会被继承。</p>
+</li>
+<li><p>当一个SetUid程序中使用了 <code>system</code> 函数来运行别的程序时，环境变量会被传入。&#x2F;bin&#x2F;sh会在PATH环境变量中按顺序寻找对应的可执行文件。以 <code>ls</code> 为例，如果我们在PATH前部加入自定义的路径，并且在这个路径下放名为 <code>ls</code> 的程序，那么我们的ls程序就会被执行。例如，我们将如下代码编译为ls程序，放在我们自定义的目录下。我们去调用一个执行 <code>system(&quot;ls&quot;)</code> 的SetUid程序时，由于我们将当前路径放到了PATH前面，所以我们的ls程序会被执行，并且通过运行时的输出我们可以发现euid为0，即以root权限执行。</p>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>  <span class="hljs-keyword">if</span>(geteuid() == <span class="hljs-number">0</span>)&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;run as root, euid:%ld\n&quot;</span>, (<span class="hljs-type">long</span>)geteuid());<br>  &#125;<span class="hljs-keyword">else</span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;not run as root, euid:%ld\n&quot;</span>, (<span class="hljs-type">long</span>)geteuid());<br>  &#125;<br>  <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>LD_PRELOAD（用来指定用户定义的一些so库），或者LD_LIBRARY_PATH（用来指定一些标准库）这些环境变量会影响加载器&#x2F;链接器的行为。例如，我们在myprog.c里面调用sleep函数，再写一个自己的库mylib封装一个恶意的sleep函数。并使用普通用户把LD_PRELOAD修改为mylib这个库。<ol>
+<li>myprog为非SetUid程序，普通用户调用，恶意函数被执行（说明LD_PRELOAD被继承）。</li>
+<li>myprog为SetUid程序，普通用户调用，恶意函数没有被执行（标准库中的sleep被执行）（说明LD_PRELOAD没有被继承）。</li>
+<li>myprog为SetUid程序，使用root修改环境变量LD_PRELOAD，root用户执行，恶意函数被执行（root下有LD_PRELOAD这个变量）。普通用户执行，恶意函数没有被执行。</li>
+</ol>
+</li>
+<li>在SetUid程序中使用 <code>system</code> 函数，有可能因为命令注入导致特权命令被执行。<code>execve</code> 函数会防止命令注入。</li>
+<li>在SetUid程序中，其完成一些特权操作以后，会回到正常用户模式，但是在特权模式下申请的一些资源可能还没有释放，回到正常用户态以后仍然可以利用这些资源完成特权操作。</li>
+</ol>
 
               
             </div>
@@ -342,7 +366,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">#二进制安全总结</a>
+        <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">#软件安全总结</a>
       
     </div>
   
@@ -354,7 +378,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>栈溢出攻防博弈</div>
+      <div>SeftwareSec</div>
       <div>https://lihaoran8001.github.io/2022/06/28/binarySecurity/</div>
     </div>
     <div class="license-meta">
