@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
 <meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-07-17T09:48:55.009Z">
+<meta property="article:modified_time" content="2022-07-17T14:58:00.657Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="软件安全总结">
 <meta name="twitter:card" content="summary_large_image">
@@ -212,7 +212,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.7k 字
+          6.1k 字
         
       </span>
     
@@ -223,7 +223,7 @@
         
         
         
-          20 分钟
+          21 分钟
         
       </span>
     
@@ -350,6 +350,8 @@
 <li>写入内存</li>
 </ol>
 <p>但是123步骤并不是原子化的，如果在步骤23之间执行了 <code>madvice</code> 系统调用，那么文件指针就会指向原来的内存，造成越权写入。我们可以创建两个进程，一个进程在循环执行 <code>write</code> 系统调用，另一个在循环执行 <code>madvice</code> 系统调用，那么就可以使用普通用户的身份对 <code>/etc/passwd</code> 文件进行写入，从而获取root权限。</p>
+<p>（和上一章的竞态条件漏洞来比，这个漏洞的问题同样也出在校验后，操作前。<code>write</code> 对用户的权限进行了校验，认为需要创建一份单独的拷贝并将指针指向了拷贝内存，但是 <code>madvice</code> 又让指针指了回去，<code>madvice</code> 的作用和创建软链接的过程有点类似。）</p>
+<h4 id="ShellShock"><a href="#ShellShock" class="headerlink" title="ShellShock"></a>ShellShock</h4><p>原理是bash在解析父进程传递来的环境变量时，会将以 <code>() &#123; </code> 开头的变量解析成为一个函数。如果这个函数定义的后面有跟随一条指令的话，那么这条指令会被执行。有点类似于命令注入（把数据当作了代码并且执行）。受影响的bash版本为4.2.0(1)。常见于使用CGI来处理请求的web服务器上。因为服务器程序接受到输入以后，可能会将一些HTTP头设置为环境变量，然后调用cgi，cgi可能会使用bash脚本来完成任务。</p>
 
               
             </div>

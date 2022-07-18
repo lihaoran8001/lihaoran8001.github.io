@@ -16,21 +16,21 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
+    <meta name="description" content="Public-Key Infrastructure(PKI)PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。 世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如Veri">
 <meta property="og:type" content="article">
-<meta property="og:title" content="netSec">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/12/netSec/index.html">
+<meta property="og:title" content="Cryptography">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/18/Crypto/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
+<meta property="og:description" content="Public-Key Infrastructure(PKI)PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。 世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如Veri">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-07-12T20:28:53.000Z">
-<meta property="article:modified_time" content="2022-07-12T20:37:31.156Z">
+<meta property="article:published_time" content="2022-07-18T09:01:15.000Z">
+<meta property="article:modified_time" content="2022-07-18T13:32:29.110Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="network Security">
+<meta property="article:tag" content="密码学总结">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>netSec - 1nt3rva1&#39;s personal blog</title>
+  <title>Cryptography - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="netSec"></span>
+            <span id="subtitle" data-typed-text="Cryptography"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-07-12 22:28" pubdate>
-          2022年7月12日 晚上
+        <time datetime="2022-07-18 11:01" pubdate>
+          2022年7月18日 上午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          274 字
+          748 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          1 分钟
+          3 分钟
         
       </span>
     
@@ -267,22 +267,14 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">netSec</h1>
+            <h1 style="display: none">Cryptography</h1>
             
             <div class="markdown-body">
               
-              <h3 id="蠕虫病毒"><a href="#蠕虫病毒" class="headerlink" title="蠕虫病毒"></a>蠕虫病毒</h3><p>以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件</p>
-<ol>
-<li>通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网）</li>
-<li>对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统）</li>
-<li>可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载恶意脚本）</li>
-</ol>
-<p>更高明的蠕虫病毒可以实现：</p>
-<ol>
-<li>拥有更高的传播效率，并且不被受害者发现</li>
-<li>可以实现判断下一个目标是否可达</li>
-<li>防止自我感染，也就是对已经感染过的目标不再进行二次感染</li>
-</ol>
+              <h3 id="Public-Key-Infrastructure-PKI"><a href="#Public-Key-Infrastructure-PKI" class="headerlink" title="Public-Key Infrastructure(PKI)"></a>Public-Key Infrastructure(PKI)</h3><p>PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。</p>
+<p>世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如VeriSign的根证书就被放在操作系统中，如果我们开设了一个网站，我们可以生成一个CSR(Certificate Signing Request)发给VeriSign，他会用自己的根证书和私钥来把我们的公钥证书签发给我们，那当用户访问我们的网站的时候，网站把公钥证书发给用户，用户的浏览器就可以使用操作系统中自带的VeriSign的根证书来验证我们这个公钥证书的真实性。</p>
+<p>而MITM攻击的原理就是，如果我们可以将用户访问一个网站的流量导入到我们的服务器，我们就知道他要访问的网站是什么，我们就可以使用我们自己的公钥来替换掉原本网站的公钥，并发给用户。用户使用这个公钥加密一个secret，我们就可以拿自己的私钥来解密得到这个secret，再用原网站的公钥加密，发给那个网站。这个secret是用来加密后续的流量的，如果我们已经拿到了这个secret，那么我们就可以解密所有后续发送和接受的流量，我们还可以对流量进行篡改。</p>
+<p>而PKI就是保证了，当用户收到（我们的）服务器发来的假公钥证书时，可以通过CA根证书来进行校验，从而察觉到这个证书不是真正想要访问的网站发来的证书。（如果我们把这个颁发假证书的CA根证书加入到操作系统&#x2F;浏览器的信任证书列表中，那我们就可以实现无痕的MITM攻击了，但是这需要用户配合）</p>
 
               
             </div>
@@ -290,11 +282,32 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Crypto/" class="category-chain-item">Crypto</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/network-Security/">#network Security</a>
+        <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6%E6%80%BB%E7%BB%93/">#密码学总结</a>
       
     </div>
   
@@ -306,8 +319,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>netSec</div>
-      <div>https://lihaoran8001.github.io/2022/07/12/netSec/</div>
+      <div>Cryptography</div>
+      <div>https://lihaoran8001.github.io/2022/07/18/Crypto/</div>
     </div>
     <div class="license-meta">
       
@@ -319,7 +332,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年7月12日</div>
+          <div>2022年7月18日</div>
         </div>
       
       
@@ -349,18 +362,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/18/Crypto/" title="Cryptography">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Cryptography</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/" title="x86指令集简介">
-                        <span class="hidden-mobile">x86指令集简介</span>
+                      <a href="/2022/07/12/netSec/" title="netSec">
+                        <span class="hidden-mobile">netSec</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
