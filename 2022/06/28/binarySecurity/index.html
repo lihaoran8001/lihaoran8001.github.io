@@ -16,23 +16,23 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="软件安全总结栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥">
+    <meta name="description" content="栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SoftwareSec">
+<meta property="og:title" content="Binary vulnerabilities">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="软件安全总结栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥">
+<meta property="og:description" content="栈溢出漏洞在低级语言中使用一些内存操作函数（如gets , scanf, vscanf, strcat, strcpy, sprintf, bcopy）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
 <meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-07-18T13:38:36.615Z">
+<meta property="article:modified_time" content="2022-07-18T13:44:19.626Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="软件安全总结">
+<meta property="article:tag" content="Binary Security">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
   
   
-  <title>SoftwareSec - 1nt3rva1&#39;s personal blog</title>
+  <title>Binary vulnerabilities - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -189,7 +189,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="SoftwareSec"></span>
+            <span id="subtitle" data-typed-text="Binary vulnerabilities"></span>
           
         </div>
 
@@ -269,11 +269,11 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SoftwareSec</h1>
+            <h1 style="display: none">Binary vulnerabilities</h1>
             
             <div class="markdown-body">
               
-              <h1 id="软件安全总结"><a href="#软件安全总结" class="headerlink" title="软件安全总结"></a>软件安全总结</h1><h3 id="栈溢出漏洞"><a href="#栈溢出漏洞" class="headerlink" title="栈溢出漏洞"></a>栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>gets</code> , <code>scanf</code>, <code>vscanf</code>, <code>strcat</code>, <code>strcpy</code>, <code>sprintf</code>, <code>bcopy</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
+              <h3 id="栈溢出漏洞"><a href="#栈溢出漏洞" class="headerlink" title="栈溢出漏洞"></a>栈溢出漏洞</h3><p>在低级语言中使用一些内存操作函数（如<code>gets</code> , <code>scanf</code>, <code>vscanf</code>, <code>strcat</code>, <code>strcpy</code>, <code>sprintf</code>, <code>bcopy</code>）操作栈（非动态申请）中的内存时，有可能会因为对函数的误用或者没有做长度校验而使操作的内存空间超出所申请的buffer的范围，从而对本身不应被读写的内存被误读写。他可能会导致栈中的变量被读取或者修改。数据被读取有可能造成机密性被破坏，密钥，密码等等被泄漏（例如心脏滴血漏洞）。数据被修改可能导致校验被绕过（如果攻击者修改了校验位）。而最重要的，因为栈中会保存这个函数返回的地址信息，当这个地址数据被修改时，程序的控制流会被劫持，也就是PC指针会指向一个攻击者指定的地方，从而执行任意指令。</p>
 <h4 id="攻防博弈"><a href="#攻防博弈" class="headerlink" title="攻防博弈"></a>攻防博弈</h4><p>攻击：</p>
 <ol>
 <li>（Ret2Shellcode）攻击者在栈里面布置一段shellcode（原意是可以开启一个shell的代码，其实可以是任意恶意代码的机器码），并修改返回地址，让其指向这段shellcode的开头，当函数执行结束时，会跳转到这段代码开始执行，从而实现RCE（任意代码执行）。这个攻击的条件是，要保证函数返回前，被覆盖的栈中内存不会导致程序崩溃（要顺利执行到函数返回的地方）。</li>
@@ -359,32 +359,11 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Binary-Security/" class="category-chain-item">Binary Security</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">#软件安全总结</a>
+        <a href="/tags/Binary-Security/">#Binary Security</a>
       
     </div>
   
@@ -396,7 +375,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>SoftwareSec</div>
+      <div>Binary vulnerabilities</div>
       <div>https://lihaoran8001.github.io/2022/06/28/binarySecurity/</div>
     </div>
     <div class="license-meta">
