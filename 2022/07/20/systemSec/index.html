@@ -16,21 +16,21 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Public-Key Infrastructure(PKI)PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。 世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如Veri">
+    <meta name="description" content="幽灵(Spectre)幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。 这个方法叫 FLUSH+RE">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cryptography">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/18/Crypto/index.html">
+<meta property="og:title" content="systemSec">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/20/systemSec/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="Public-Key Infrastructure(PKI)PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。 世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如Veri">
+<meta property="og:description" content="幽灵(Spectre)幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。 这个方法叫 FLUSH+RE">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-07-18T09:01:15.000Z">
-<meta property="article:modified_time" content="2022-07-20T08:47:40.631Z">
+<meta property="article:published_time" content="2022-07-20T08:51:09.000Z">
+<meta property="article:modified_time" content="2022-07-20T12:52:17.003Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="System Security">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>Cryptography - 1nt3rva1&#39;s personal blog</title>
+  <title>systemSec - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Cryptography"></span>
+            <span id="subtitle" data-typed-text="systemSec"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-07-18 11:01" pubdate>
-          2022年7月18日 上午
+        <time datetime="2022-07-20 10:51" pubdate>
+          2022年7月20日 上午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          979 字
         
       </span>
     
@@ -267,15 +267,26 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Cryptography</h1>
+            <h1 style="display: none">systemSec</h1>
             
             <div class="markdown-body">
               
-              <h3 id="Public-Key-Infrastructure-PKI"><a href="#Public-Key-Infrastructure-PKI" class="headerlink" title="Public-Key Infrastructure(PKI)"></a>Public-Key Infrastructure(PKI)</h3><p>PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。</p>
-<p>世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如VeriSign的根证书就被放在操作系统中，如果我们开设了一个网站，我们可以生成一个包含有我们的域名的CSR(Certificate Signing Request)发给VeriSign（也可以使用SAN来包含多个域名），他会用自己的根证书和私钥来把我们的公钥证书签发给我们，那当用户访问我们的网站的时候，网站把公钥证书发给用户，用户的浏览器就可以使用操作系统中自带的VeriSign的根证书来验证我们这个公钥证书的真实性。</p>
-<p>而MITM攻击的原理就是，如果我们可以将用户访问一个网站的流量导入到我们的服务器，我们就知道他要访问的网站是什么，我们就可以使用我们自己的公钥来替换掉原本网站的公钥，并发给用户。用户使用这个公钥加密一个secret，我们就可以拿自己的私钥来解密得到这个secret，再用原网站的公钥加密，发给那个网站。这个secret是用来加密后续的流量的，如果我们已经拿到了这个secret，那么我们就可以解密所有后续发送和接受的流量，我们还可以对流量进行篡改。</p>
-<p>而PKI就是保证了，当用户收到（我们的）服务器发来的假公钥证书时，可以通过CA根证书来进行校验，从而察觉到这个证书不是真正想要访问的网站发来的证书。（如果我们把这个颁发假证书的CA根证书加入到操作系统&#x2F;浏览器的信任证书列表中，那我们就可以实现无痕的MITM攻击了，但是这需要用户配合&#x2F;或者用来向自己的操作系统中插入证书用来抓取流量）</p>
-<h3 id="Transport-Layer-Security-TLS"><a href="#Transport-Layer-Security-TLS" class="headerlink" title="Transport Layer Security(TLS)"></a>Transport Layer Security(TLS)</h3><p>TLS协议是封装在TCP协议之上的一个协议，作为客户端，需要在建立TLS之前设置好一些context，例如CA证书的目录，是否进行证书校验，以及是否进行域名校验。作为服务器端，需要设置好服务器的公钥证书以及私钥。两方在握手阶段会协商好后续要采用的一系列加密&#x2F;MD的算法，以及利用非对称加密共享一个secret，作为后续对称加密的密钥使用。</p>
+              <h3 id="幽灵-Spectre"><a href="#幽灵-Spectre" class="headerlink" title="幽灵(Spectre)"></a>幽灵(Spectre)</h3><p>幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。</p>
+<p>这个方法叫 <code>FLUSH+RELOAD</code>。我们可以利用这个信息（访问的时间）来确定一块内存是不是最近被访问过。以数组为例，这个操作的流程是：</p>
+<ol>
+<li>将整个数组中的元素全部flush，也就是确保他们都不再cache中。</li>
+<li>调用目标函数，目标函数会访问一个秘密index的内存。</li>
+<li>逐次load整个数组，查看哪一个元素被load时的用时最少，那么这个元素就很有可能被目标函数访问过。</li>
+</ol>
+<p>非顺序执行：指的是CPU为了优化执行流程，会提前预判一个判断语句并开始投机性地执行预判以后的语句。如果预判正确，那么这样会提升效率。如果预判失败，那么就会回滚所有已经做过的操作，例如恢复寄存器等等。但是问题出在其没有回滚cache，也就是说，如果CPU预判了一个语句，那么这时投机性执行访问过的内存就会被放在cache中。如果最后结果为误判，那么cache也不会被恢复到原来的情况。我们可以利用这一点来在即使无法通过判断条件的情况下执行后续代码，并利用cache的缓存来得到结果。</p>
+<p>这就是幽灵漏洞，以尝试越界访问数组为例，目标函数会判断传入的index是否在数组边界内，如果在的话就返回对应的数组内容。</p>
+<ol>
+<li>我们可以首先训练CPU，不断的满足判断条件，让他在攻击中也会预判条件满足（尽管最终的条件是不满足）。</li>
+<li>当CPU预判条件满足时，会执行后续语句，这时尽管传入的index超出的数组边界，也会被执行，并且被返回。我们会提前布置好一个全部flush过的工具数组，用来保存返回的结果。返回后我们可以将以这个值作为index的工具数组的值进行修改&#x2F;访问，让工具数组的这个index的内容进入cache。</li>
+<li>最后我们reload一遍工具数组，哪一个index被访问过，那么这个index的值就是之前越界访问的数组的值。</li>
+<li>为了避免噪声干扰，我们可以将同样的实验重复多次，来增加准确率。</li>
+</ol>
+<p>幽灵不止可以访问同一个进程中的被保护的内存，还可以跨进程进行攻击。</p>
 
               
             </div>
@@ -287,7 +298,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Crypto/">#Crypto</a>
+        <a href="/tags/System-Security/">#System Security</a>
       
     </div>
   
@@ -299,8 +310,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Cryptography</div>
-      <div>https://lihaoran8001.github.io/2022/07/18/Crypto/</div>
+      <div>systemSec</div>
+      <div>https://lihaoran8001.github.io/2022/07/20/systemSec/</div>
     </div>
     <div class="license-meta">
       
@@ -312,7 +323,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年7月18日</div>
+          <div>2022年7月20日</div>
         </div>
       
       
@@ -342,18 +353,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/20/systemSec/" title="systemSec">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">systemSec</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/12/netSec/" title="NetSec">
-                        <span class="hidden-mobile">NetSec</span>
+                      <a href="/2022/07/18/Crypto/" title="Cryptography">
+                        <span class="hidden-mobile">Cryptography</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
