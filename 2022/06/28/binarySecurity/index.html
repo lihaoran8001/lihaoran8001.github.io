@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/06/28/binarySecurity/fmtStr.png">
 <meta property="article:published_time" content="2022-06-28T11:35:48.000Z">
-<meta property="article:modified_time" content="2022-07-18T13:44:19.626Z">
+<meta property="article:modified_time" content="2022-07-21T07:44:25.254Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Binary Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -212,7 +212,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.1k 字
+          6.2k 字
         
       </span>
     
@@ -342,6 +342,8 @@
 
 <p>如果context switch发生在***处，此时另外一个程序将&#x2F;tmp&#x2F;XYZ symlink到了&#x2F;etc&#x2F;passwd，那么就会对passwd文件进行读写，造成权限泄漏。</p>
 <p>（是不是所有SetUid程序中先校验，再对文件（因为可以创造软链接）的操作都存在可能的竞态条件漏洞？）（不过也取决于这个校验是什么样子的，是否可以通过控制文件来使得程序通过校验）</p>
+<p>linux中的符号链接和硬链接：</p>
+<p>符号链接类似于快捷方式，是创建一个文本文件，这个文本中包含了真正的文件的位置等信息，当访问这个文本文件时，操作系统会转而访问真正的目标文件。硬链接是指两个文件虽然有不同的文件名，但是都指向硬盘上面的同一块区域，这两个文件具有相同的inode编号。</p>
 <h3 id="DirtyCOW漏洞"><a href="#DirtyCOW漏洞" class="headerlink" title="DirtyCOW漏洞"></a>DirtyCOW漏洞</h3><p>DirtyCOW漏洞是linux内核中竞态条件漏洞的一个实例，攻击者可以利用这个漏洞获取root权限。当一个普通用户对某一个文件只有读权限时，其可以访问 <code>/proc/self/mem</code> 文件并调用 <code>write</code> 函数对内存进行写入，但是在write内部会判断，如果当前用户拥有只读权限，那么会在内存中进行一次拷贝，所有写的内容会写在新创建的这部分内存中，从而对原文件没有任何影响。在当前的拷贝后的内存不再被使用时，<code>madvice</code> 系统调用会建议操作系统内核删除这份拷贝，并将文件指针指向原来的内存。</p>
 <p>所以 <code>write</code> 的执行顺序是：</p>
 <ol>
