@@ -24,7 +24,7 @@
 <meta property="og:description" content="幽灵(Spectre)幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。 这个方法叫 FLUSH+RE">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-20T08:51:09.000Z">
-<meta property="article:modified_time" content="2022-07-20T12:52:17.003Z">
+<meta property="article:modified_time" content="2022-07-23T07:56:42.123Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="System Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          979 字
+          1.6k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          4 分钟
+          6 分钟
         
       </span>
     
@@ -272,7 +272,7 @@
             <div class="markdown-body">
               
               <h3 id="幽灵-Spectre"><a href="#幽灵-Spectre" class="headerlink" title="幽灵(Spectre)"></a>幽灵(Spectre)</h3><p>幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。</p>
-<p>这个方法叫 <code>FLUSH+RELOAD</code>。我们可以利用这个信息（访问的时间）来确定一块内存是不是最近被访问过。以数组为例，这个操作的流程是：</p>
+<p>这个方法叫 <code>FLUSH+RELOAD</code>。我们可以利用这个侧信息（访问的时间）来确定一块内存是不是最近被访问过。以数组为例，这个操作的流程是：</p>
 <ol>
 <li>将整个数组中的元素全部flush，也就是确保他们都不再cache中。</li>
 <li>调用目标函数，目标函数会访问一个秘密index的内存。</li>
@@ -287,6 +287,17 @@
 <li>为了避免噪声干扰，我们可以将同样的实验重复多次，来增加准确率。</li>
 </ol>
 <p>幽灵不止可以访问同一个进程中的被保护的内存，还可以跨进程进行攻击。</p>
+<h3 id="融毁-Meltdown"><a href="#融毁-Meltdown" class="headerlink" title="融毁(Meltdown)"></a>融毁(Meltdown)</h3><p>基本原理和幽灵漏洞相似，同样利用了 <code>FLUSH+RELOAD</code> 以及Out-Of-Order Execution两个特性，只是两种不同的利用方法，这个利用方法可以使得用户态的程序读取任意的内核态内存。</p>
+<p>利用方法是，当我们直接在用户态下使用一个指针指向内核区的内存并访问时，会由于CPU给内核的内存页设置的不可访问标签而产生异常，例如如下语句：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">char</span> *kernel_data_addr = (<span class="hljs-type">char</span>*)<span class="hljs-number">0xfb61b000</span>;<br><span class="hljs-type">char</span> kernel_data = *kernel_data_addr;<br><span class="hljs-built_in">array</span>[kernel_data * <span class="hljs-number">4096</span> + DELTA] += <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+
+<p>当程序执行到第二行时，实际上在CPU同时发生了两件事情。</p>
+<ol>
+<li>系统去访问页表的标志位，查询这个内存页是不是可以访问。</li>
+<li>从内存中加载对应地址的数据。</li>
+</ol>
+<p>由于CPU的OOOE特性，如果我提前已经将这个地址的内核数据加载过一次，那么他有可能被缓存在Cache中，操作2消耗的时间就会非常少，CPU为了提高效率，会继续执行后续语句。但是最终当系统查询到这个页是不可读的时候，会回滚所有的操作，但有可能代码的第三行已经被执行了，我们就可以对array数组进行 <code>FLUSH+RELOAD</code> 操作从而得到内核内存的值。这个其实是CPU的漏洞+一个竞态条件漏洞。</p>
+<p>在实际的操作中，我们需要提前加载一次目标内核内存（实际攻击看运气），并且可以在访问内核内存之前进行几次算术的循环，占用ALU（是一个小trick），也可以像幽灵一样多次进行攻击，通过统计来提升准确率。</p>
 
               
             </div>
