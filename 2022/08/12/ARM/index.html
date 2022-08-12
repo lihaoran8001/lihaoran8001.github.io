@@ -16,21 +16,21 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="幽灵(Spectre)幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。 这个方法叫 FLUSH+RE">
+    <meta name="description" content="ARM指令集知识ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 BX(Branch and Exchange) 或 BLX(Br">
 <meta property="og:type" content="article">
-<meta property="og:title" content="systemSec">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/07/20/systemSec/index.html">
+<meta property="og:title" content="ARM&#x2F;MIPS指令集知识">
+<meta property="og:url" content="https://lihaoran8001.github.io/2022/08/12/ARM/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="幽灵(Spectre)幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。 这个方法叫 FLUSH+RE">
+<meta property="og:description" content="ARM指令集知识ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 BX(Branch and Exchange) 或 BLX(Br">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-07-20T08:51:09.000Z">
-<meta property="article:modified_time" content="2022-07-23T07:56:42.123Z">
+<meta property="article:published_time" content="2022-08-12T08:57:01.000Z">
+<meta property="article:modified_time" content="2022-08-12T18:42:04.865Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="System Security">
+<meta property="article:tag" content="Pwn">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>systemSec - 1nt3rva1&#39;s personal blog</title>
+  <title>ARM/MIPS指令集知识 - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +187,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="systemSec"></span>
+            <span id="subtitle" data-typed-text="ARM/MIPS指令集知识"></span>
           
         </div>
 
@@ -198,8 +198,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-07-20 10:51" pubdate>
-          2022年7月20日 上午
+        <time datetime="2022-08-12 10:57" pubdate>
+          2022年8月12日 上午
         </time>
       </span>
     
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          1.2k 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          6 分钟
+          5 分钟
         
       </span>
     
@@ -267,37 +267,140 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">systemSec</h1>
+            <h1 style="display: none">ARM/MIPS指令集知识</h1>
             
             <div class="markdown-body">
               
-              <h3 id="幽灵-Spectre"><a href="#幽灵-Spectre" class="headerlink" title="幽灵(Spectre)"></a>幽灵(Spectre)</h3><p>幽灵漏洞主要利用了CPU设计过程中的一个缺陷，使用侧信道攻击的方式可以获取到程序本身不能读取到的内存信息。在CPU访问内存（RAM）时，其会首先检查相应的内容有没有被缓存在自己的cache中，如果已经存入cache，那么就可以更快速的访问（cache hit），如果没有的话，需要将内存中的内容加载进cache方便后续访问（cache miss）。</p>
-<p>这个方法叫 <code>FLUSH+RELOAD</code>。我们可以利用这个侧信息（访问的时间）来确定一块内存是不是最近被访问过。以数组为例，这个操作的流程是：</p>
-<ol>
-<li>将整个数组中的元素全部flush，也就是确保他们都不再cache中。</li>
-<li>调用目标函数，目标函数会访问一个秘密index的内存。</li>
-<li>逐次load整个数组，查看哪一个元素被load时的用时最少，那么这个元素就很有可能被目标函数访问过。</li>
-</ol>
-<p>非顺序执行：指的是CPU为了优化执行流程，会提前预判一个判断语句并开始投机性地执行预判以后的语句。如果预判正确，那么这样会提升效率。如果预判失败，那么就会回滚所有已经做过的操作，例如恢复寄存器等等。但是问题出在其没有回滚cache，也就是说，如果CPU预判了一个语句，那么这时投机性执行访问过的内存就会被放在cache中。如果最后结果为误判，那么cache也不会被恢复到原来的情况。我们可以利用这一点来在即使无法通过判断条件的情况下执行后续代码，并利用cache的缓存来得到结果。</p>
-<p>这就是幽灵漏洞，以尝试越界访问数组为例，目标函数会判断传入的index是否在数组边界内，如果在的话就返回对应的数组内容。</p>
-<ol>
-<li>我们可以首先训练CPU，不断的满足判断条件，让他在攻击中也会预判条件满足（尽管最终的条件是不满足）。</li>
-<li>当CPU预判条件满足时，会执行后续语句，这时尽管传入的index超出的数组边界，也会被执行，并且被返回。我们会提前布置好一个全部flush过的工具数组，用来保存返回的结果。返回后我们可以将以这个值作为index的工具数组的值进行修改&#x2F;访问，让工具数组的这个index的内容进入cache。</li>
-<li>最后我们reload一遍工具数组，哪一个index被访问过，那么这个index的值就是之前越界访问的数组的值。</li>
-<li>为了避免噪声干扰，我们可以将同样的实验重复多次，来增加准确率。</li>
-</ol>
-<p>幽灵不止可以访问同一个进程中的被保护的内存，还可以跨进程进行攻击。</p>
-<h3 id="融毁-Meltdown"><a href="#融毁-Meltdown" class="headerlink" title="融毁(Meltdown)"></a>融毁(Meltdown)</h3><p>基本原理和幽灵漏洞相似，同样利用了 <code>FLUSH+RELOAD</code> 以及Out-Of-Order Execution两个特性，只是两种不同的利用方法，这个利用方法可以使得用户态的程序读取任意的内核态内存。</p>
-<p>利用方法是，当我们直接在用户态下使用一个指针指向内核区的内存并访问时，会由于CPU给内核的内存页设置的不可访问标签而产生异常，例如如下语句：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">char</span> *kernel_data_addr = (<span class="hljs-type">char</span>*)<span class="hljs-number">0xfb61b000</span>;<br><span class="hljs-type">char</span> kernel_data = *kernel_data_addr;<br><span class="hljs-built_in">array</span>[kernel_data * <span class="hljs-number">4096</span> + DELTA] += <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+              <h3 id="ARM指令集知识"><a href="#ARM指令集知识" class="headerlink" title="ARM指令集知识"></a>ARM指令集知识</h3><p>ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 <code>BX(Branch and Exchange)</code> 或 <code>BLX(Branch, Link and Exchange)</code> 来跳转至Thumb指令中开始执行，注意跳转到的目的地址需要比实际地址+1，这样并不会造成地址不对齐，这是跳转Thumb执行的规定。此外，ARM一般为大端序。</p>
+<h4 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h4><p>ARM指令集有共有37个寄存器，其中6个状态寄存器。有16个用户层可以访问和控制的寄存器，分为两组，通用寄存器和有特殊用途的寄存器。其中 <code>R0</code> - <code>R10</code> 为通用型寄存器，其余六个有特殊用途：</p>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th align="left">别名</th>
+<th align="left">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R11</td>
+<td align="left">FP(Frame Pointer)</td>
+<td align="left">栈帧指针</td>
+</tr>
+<tr>
+<td>R12</td>
+<td align="left">IP</td>
+<td align="left">内部程序调用</td>
+</tr>
+<tr>
+<td>R13</td>
+<td align="left">SP(Stack Pointer)</td>
+<td align="left">栈指针</td>
+</tr>
+<tr>
+<td>R14</td>
+<td align="left">LR(Link Register)</td>
+<td align="left">链接寄存器（一般存放函数的返回地址）</td>
+</tr>
+<tr>
+<td>R15</td>
+<td align="left">PC(Program Counter)</td>
+<td align="left">程序计数寄存器</td>
+</tr>
+<tr>
+<td>CPSR</td>
+<td align="left">-</td>
+<td align="left">当前程序状态寄存器</td>
+</tr>
+</tbody></table>
+<p>在通用寄存器中，<code>R0</code> - <code>R3</code> 用来保存函数调用时的前四个参数，如果有更多的参数，需要保存在栈上。</p>
+<h4 id="指令特点"><a href="#指令特点" class="headerlink" title="指令特点"></a>指令特点</h4><p>Arm程序的指令都支持条件执行，也就是一条指令会通过判断标志位来决定是否执行，这样减少了不必要的分支指令，增加的代码密度。</p>
+<table>
+<thead>
+<tr>
+<th align="left">指令</th>
+<th align="left">含义</th>
+<th align="left">指令</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MOV</td>
+<td align="left">移动数据</td>
+<td align="left">EOR</td>
+<td align="left">异或</td>
+</tr>
+<tr>
+<td align="left">MVN</td>
+<td align="left">取反码移动数据</td>
+<td align="left">LDR</td>
+<td align="left">加载数据</td>
+</tr>
+<tr>
+<td align="left">ADD</td>
+<td align="left">数据相加</td>
+<td align="left">STR</td>
+<td align="left">存储数据</td>
+</tr>
+<tr>
+<td align="left">SUB</td>
+<td align="left">数据相减</td>
+<td align="left">LDM</td>
+<td align="left">多次加载</td>
+</tr>
+<tr>
+<td align="left">MUL</td>
+<td align="left">数据相乘</td>
+<td align="left">STM</td>
+<td align="left">多次存储</td>
+</tr>
+<tr>
+<td align="left">LSL</td>
+<td align="left">逻辑左移</td>
+<td align="left">PUSH</td>
+<td align="left">压栈</td>
+</tr>
+<tr>
+<td align="left">LSR</td>
+<td align="left">逻辑右移</td>
+<td align="left">POP</td>
+<td align="left">出栈</td>
+</tr>
+<tr>
+<td align="left">ASR</td>
+<td align="left">算术右移</td>
+<td align="left">B</td>
+<td align="left">分支跳转</td>
+</tr>
+<tr>
+<td align="left">ROR</td>
+<td align="left">循环右移</td>
+<td align="left">BL</td>
+<td align="left">链接分支跳转</td>
+</tr>
+<tr>
+<td align="left">CMP</td>
+<td align="left">比较操作</td>
+<td align="left">BX</td>
+<td align="left">分支跳转切换</td>
+</tr>
+<tr>
+<td align="left">AND</td>
+<td align="left">比特位与</td>
+<td align="left">BLX</td>
+<td align="left">链接分支跳转切换</td>
+</tr>
+<tr>
+<td align="left">ORR</td>
+<td align="left">比特位或</td>
+<td align="left">SWI&#x2F;SVC</td>
+<td align="left">系统调用</td>
+</tr>
+</tbody></table>
+<p>连续存储&#x2F;加载指令：<code>LDM</code> 和 <code>STM</code></p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">IA(<span class="hljs-params">increase</span> <span class="hljs-params">after</span>)</span><br><span class="hljs-constructor">IB(<span class="hljs-params">increase</span> <span class="hljs-params">before</span>)</span><br><span class="hljs-constructor">DA(<span class="hljs-params">decrease</span> <span class="hljs-params">after</span>)</span><br><span class="hljs-constructor">DB(<span class="hljs-params">decrease</span> <span class="hljs-params">before</span>)</span><br></code></pre></td></tr></table></figure>
 
-<p>当程序执行到第二行时，实际上在CPU同时发生了两件事情。</p>
-<ol>
-<li>系统去访问页表的标志位，查询这个内存页是不是可以访问。</li>
-<li>从内存中加载对应地址的数据。</li>
-</ol>
-<p>由于CPU的OOOE特性，如果我提前已经将这个地址的内核数据加载过一次，那么他有可能被缓存在Cache中，操作2消耗的时间就会非常少，CPU为了提高效率，会继续执行后续语句。但是最终当系统查询到这个页是不可读的时候，会回滚所有的操作，但有可能代码的第三行已经被执行了，我们就可以对array数组进行 <code>FLUSH+RELOAD</code> 操作从而得到内核内存的值。这个其实是CPU的漏洞+一个竞态条件漏洞。</p>
-<p>在实际的操作中，我们需要提前加载一次目标内核内存（实际攻击看运气），并且可以在访问内核内存之前进行几次算术的循环，占用ALU（是一个小trick），也可以像幽灵一样多次进行攻击，通过统计来提升准确率。</p>
+<p>后面追加的指令表示是在操作前还是操作后递增&#x2F;递减</p>
+<h3 id="MIPS指令"><a href="#MIPS指令" class="headerlink" title="MIPS指令"></a>MIPS指令</h3><h4 id="寄存器-1"><a href="#寄存器-1" class="headerlink" title="寄存器"></a>寄存器</h4><p>MIPS有32个通用寄存器，用 <code>$0</code> - <code>$31</code> 来表示，也可以用寄存器名称如 <code>$t0</code> <code>$sp</code> 等等来表示。其中 <code>$0</code> 为永零寄存器，其中保存的值永远等于零；<code>$v0, $v1</code> 用来保存函数的返回值，<code>$a0-$a3</code> 用来存放函数的参数；<code>$t0-$t7</code> 为通用临时寄存器，用过之后不需要恢复，<code>$s0-$s7</code> 为保留的临时寄存器，使用完以后需要进行恢；<code>$gp(global pointer)</code> 为全局指针；<code>$sp, $fp</code> 分别为栈指针和栈帧指针；<code>$ra</code> 为返回地址 。还有3个特殊寄存器，为 <code>$pc, $hi, $lo</code> ，其中PC为程序计数器，HI和LO用来保存进行乘除运算时的高位结果和低位结果</p>
 
               
             </div>
@@ -309,7 +412,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/System-Security/">#System Security</a>
+        <a href="/tags/Pwn/">#Pwn</a>
       
     </div>
   
@@ -321,8 +424,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>systemSec</div>
-      <div>https://lihaoran8001.github.io/2022/07/20/systemSec/</div>
+      <div>ARM/MIPS指令集知识</div>
+      <div>https://lihaoran8001.github.io/2022/08/12/ARM/</div>
     </div>
     <div class="license-meta">
       
@@ -334,7 +437,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年7月20日</div>
+          <div>2022年8月12日</div>
         </div>
       
       
@@ -364,18 +467,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/23/mobileSec/" title="mobileSec">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">mobileSec</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/18/Crypto/" title="Cryptography">
-                        <span class="hidden-mobile">Cryptography</span>
+                      <a href="/2022/07/27/interview/" title="interview">
+                        <span class="hidden-mobile">interview</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
