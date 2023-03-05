@@ -16,17 +16,17 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 12345678910111213AH&amp;AL＝AX(accumulator)：累加寄存器 BH&amp;BL＝BX(base)：基址寄存器 CH&amp;">
+    <meta name="description" content="寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 x86寄存器分类： 8个通用寄存器：EAX、EBX、ECX、EDX、ESI、EDI、ESP、EBP 12345678AH&amp;AL＝AX(accumulato">
 <meta property="og:type" content="article">
 <meta property="og:title" content="x86指令集简介">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 12345678910111213AH&amp;AL＝AX(accumulator)：累加寄存器 BH&amp;BL＝BX(base)：基址寄存器 CH&amp;">
+<meta property="og:description" content="寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 x86寄存器分类： 8个通用寄存器：EAX、EBX、ECX、EDX、ESI、EDI、ESP、EBP 12345678AH&amp;AL＝AX(accumulato">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/reg.png">
 <meta property="og:image" content="https://lihaoran8001.github.io/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/flags.png">
 <meta property="article:published_time" content="2022-07-05T20:41:30.000Z">
-<meta property="article:modified_time" content="2022-07-18T13:43:51.039Z">
+<meta property="article:modified_time" content="2022-08-13T09:01:02.739Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Binary Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -213,7 +213,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          5.4k 字
         
       </span>
     
@@ -224,7 +224,7 @@
         
         
         
-          18 分钟
+          19 分钟
         
       </span>
     
@@ -278,8 +278,19 @@
 
 <p>处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。</p>
 <p><code>rip</code>, <code>eip</code>, <code>ip</code> 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被<code>jmp</code>, <code>call</code>, 和<code>ret</code> 等指令间接修改。</p>
-<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-number">AH</span>&amp;<span class="hljs-built_in">AL</span>＝<span class="hljs-built_in">AX</span>(accumulator)：累加寄存器 <br><span class="hljs-number">BH</span>&amp;<span class="hljs-built_in">BL</span>＝<span class="hljs-built_in">BX</span>(base)：基址寄存器 <br><span class="hljs-number">CH</span>&amp;<span class="hljs-built_in">CL</span>＝<span class="hljs-built_in">CX</span>(count)：计数寄存器 <br><span class="hljs-number">DH</span>&amp;<span class="hljs-built_in">DL</span>＝<span class="hljs-built_in">DX</span>(data)：数据寄存器 <br><span class="hljs-built_in">SP</span>（Stack Pointer）：堆栈指针寄存器 <br><span class="hljs-built_in">BP</span>（Base Pointer）：基址指针寄存器 <br><span class="hljs-built_in">SI</span>（Source Index）：源变址寄存器 <br><span class="hljs-built_in">DI</span>（Destination Index）：目的变址寄存器 <br><span class="hljs-built_in">IP</span>（Instruction Pointer）：指令指针寄存器 <br><span class="hljs-built_in">CS</span>（Code <span class="hljs-meta">Segment</span>）代码段寄存器 <br><span class="hljs-built_in">DS</span>（Data <span class="hljs-meta">Segment</span>）：数据段寄存器 <br><span class="hljs-built_in">SS</span>（Stack <span class="hljs-meta">Segment</span>）：堆栈段寄存器 <br><span class="hljs-built_in">ES</span>（Extra <span class="hljs-meta">Segment</span>）：附加段寄存器 <br></code></pre></td></tr></table></figure>
+<p><strong>x86寄存器分类：</strong></p>
+<p>8个通用寄存器：EAX、EBX、ECX、EDX、ESI、EDI、ESP、EBP</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-number">AH</span>&amp;<span class="hljs-built_in">AL</span>＝<span class="hljs-built_in">AX</span>(accumulator)：累加寄存器 <br><span class="hljs-number">BH</span>&amp;<span class="hljs-built_in">BL</span>＝<span class="hljs-built_in">BX</span>(base)：基址寄存器 <br><span class="hljs-number">CH</span>&amp;<span class="hljs-built_in">CL</span>＝<span class="hljs-built_in">CX</span>(count)：计数寄存器 <br><span class="hljs-number">DH</span>&amp;<span class="hljs-built_in">DL</span>＝<span class="hljs-built_in">DX</span>(data)：数据寄存器 <br><span class="hljs-built_in">SP</span>（Stack Pointer）：堆栈指针寄存器 <br><span class="hljs-built_in">BP</span>（Base Pointer）：基址指针寄存器 <br><span class="hljs-built_in">SI</span>（Source Index）：源变址寄存器 <br><span class="hljs-built_in">DI</span>（Destination Index）：目的变址寄存器<br></code></pre></td></tr></table></figure>
 
+<p>6个段寄存器：CS、DS、ES、FS、GS、SS</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-built_in">CS</span>（Code <span class="hljs-meta">Segment</span>）代码段寄存器 <br><span class="hljs-built_in">DS</span>（Data <span class="hljs-meta">Segment</span>）：数据段寄存器 <br><span class="hljs-built_in">SS</span>（Stack <span class="hljs-meta">Segment</span>）：堆栈段寄存器 <br><span class="hljs-built_in">ES</span>（Extra <span class="hljs-meta">Segment</span>）：附加段寄存器 <br><span class="hljs-built_in">FS</span>附加段寄存器(Extra <span class="hljs-meta">Segment</span> Register)，其值为附加数据段的段值； <br>线程的TEB（Thread Environment Block）可以通过<span class="hljs-built_in">FS</span>寄存器来访问<br><span class="hljs-built_in">GS</span>附加段寄存器(Extra <span class="hljs-meta">Segment</span> Register)，其值为附加数据段的段值。<br></code></pre></td></tr></table></figure>
+
+<p>1个标志寄存器：EFLAGS</p>
+<p>5个控制寄存器：CR0、CR1、CR2、CR3、CR4</p>
+<p>8个调试寄存器：DR0、DR1、DR2、DR3、DR4、DR5、DR6、DR7</p>
+<p>4个系统地址寄存器：GDTR、IDTR、LDTR、TR</p>
+<p>其他寄存器：EIP、TSC等</p>
+<p>IP（Instruction Pointer）：指令指针寄存器 </p>
 <img src="/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/flags.png" srcset="/img/loading.gif" lazyload class="" title="flags">
 
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">OF</span> overflow flag 溢出标志 操作数超出机器能表示的范围表示溢出,溢出时为<span class="hljs-number">1</span>. <br><span class="hljs-attribute">SF</span> sign Flag 符号标志 记录运算结果的符号,结果负时为<span class="hljs-number">1</span>. <br><span class="hljs-attribute">ZF</span> zero flag 零标志 运算结果等于<span class="hljs-number">0</span>时为<span class="hljs-number">1</span>,否则为<span class="hljs-number">0</span>. <br><span class="hljs-attribute">CF</span> carry flag 进位标志 最高有效位产生进位时为<span class="hljs-number">1</span>,否则为<span class="hljs-number">0</span>. <br><span class="hljs-attribute">AF</span> auxiliary carry flag 辅助进位标志 运算时,第<span class="hljs-number">3</span>位向第<span class="hljs-number">4</span>位产生进位时为<span class="hljs-number">1</span>,否则为<span class="hljs-number">0</span>. <br><span class="hljs-attribute">PF</span> parity flag 奇偶标志 运算结果操作数位为<span class="hljs-number">1</span>的个数为偶数个时为<span class="hljs-number">1</span>,否则为<span class="hljs-number">0</span>. <br><span class="hljs-attribute">DF</span> direcion flag 方向标志 用于串处理.DF=<span class="hljs-number">1</span>时,每次操作后使SI和DI减小.DF=<span class="hljs-number">0</span>时则增大. <br><span class="hljs-attribute">IF</span> interrupt flag 中断标志 IF=<span class="hljs-number">1</span>时,允许CPU响应可屏蔽中断,否则关闭中断. <br><span class="hljs-attribute">TF</span> trap flag 陷阱标志 用于调试单步操作.<br></code></pre></td></tr></table></figure>

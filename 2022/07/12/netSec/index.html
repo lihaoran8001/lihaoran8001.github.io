@@ -16,15 +16,15 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
+    <meta name="description" content="抓包和伪造Python 的 scapy 模块可以用来抓包，需要运行在高权限模式下。使用 Berkeley Packet Filter 可以设置过滤器，用来抓取指定规则下的包。按理来说，在混杂模式下，在一个使用hub（集线器）的共享网络中，一个电脑可以监听整个LAN内的数据包，即使该数据包的目的地址不是这个电脑。但实际情况现有的交换机设备不会将这些没用的数据包发给我们，只有那些真正需要广播的数据，才">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NetSec">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/07/12/netSec/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载">
+<meta property="og:description" content="抓包和伪造Python 的 scapy 模块可以用来抓包，需要运行在高权限模式下。使用 Berkeley Packet Filter 可以设置过滤器，用来抓取指定规则下的包。按理来说，在混杂模式下，在一个使用hub（集线器）的共享网络中，一个电脑可以监听整个LAN内的数据包，即使该数据包的目的地址不是这个电脑。但实际情况现有的交换机设备不会将这些没用的数据包发给我们，只有那些真正需要广播的数据，才">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-12T20:28:53.000Z">
-<meta property="article:modified_time" content="2022-07-18T13:40:58.803Z">
+<meta property="article:modified_time" content="2023-03-05T10:01:15.258Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Network Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -210,7 +210,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          274 字
+          602 字
         
       </span>
     
@@ -221,7 +221,7 @@
         
         
         
-          1 分钟
+          3 分钟
         
       </span>
     
@@ -271,7 +271,9 @@
             
             <div class="markdown-body">
               
-              <h3 id="蠕虫病毒"><a href="#蠕虫病毒" class="headerlink" title="蠕虫病毒"></a>蠕虫病毒</h3><p>以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件</p>
+              <h3 id="抓包和伪造"><a href="#抓包和伪造" class="headerlink" title="抓包和伪造"></a>抓包和伪造</h3><p>Python 的 scapy 模块可以用来抓包，需要运行在高权限模式下。使用 Berkeley Packet Filter 可以设置过滤器，用来抓取指定规则下的包。按理来说，在混杂模式下，在一个使用hub（集线器）的共享网络中，一个电脑可以监听整个LAN内的数据包，即使该数据包的目的地址不是这个电脑。但实际情况现有的交换机设备不会将这些没用的数据包发给我们，只有那些真正需要广播的数据，才会被发送到我们的设备。</p>
+<p>因此我们需要进行ARP欺骗，也就是当路由器&#x2F;目标主机发送ARP询问时，我们需要进行回复，目的是将流量引导到我们的设备上来，再进行后续操作。每个主机都有一份ARP表，当一个设备发起询问时，他不会验证回复的真实性，而会直接覆盖原有的对应关系。</p>
+<h3 id="蠕虫病毒"><a href="#蠕虫病毒" class="headerlink" title="蠕虫病毒"></a>蠕虫病毒</h3><p>以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件</p>
 <ol>
 <li>通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网）</li>
 <li>对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统）</li>

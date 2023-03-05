@@ -216,6 +216,39 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/02/13/program-misuse/" target="_self">
+          program misuse
+        </a>
+      </h1>
+
+      <a class="index-excerpt" href="/2023/02/13/program-misuse/" target="_self">
+        <div>
+          
+          一些程序，如果他们被设置了SUID位，那么他们将拥有特权权限，我们可以利用这些程序来读取被保护的文件。例如： cat, vim&#x2F;vi&#x2F;emacs, less&#x2F;more, head&#x2F;tail, gzip&#x2F;zip&#x2F;tar&#x2F;ar&#x2F;cpio, base32&#x2F;base64, split&#x2F;sort, od&#x2F;xxd实际上有非常多的命令可以被用来读取文件。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-02-13 22:29" pubdate>
+              2023-02-13
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/08/12/ARM/" target="_self">
           ARM/MIPS指令集知识
         </a>
@@ -264,7 +297,7 @@
       <a class="index-excerpt" href="/2022/07/27/interview/" target="_self">
         <div>
           
-          Pwnpwn保护机制编译选项： Canary设置栈cookie 检测栈是否被破坏 NX堆栈不可执行 RELRO got表不可写 系统策略： ASLR栈base随机化 PIE代码和地址无关 栈溢出通过溢出栈上的缓冲区从而覆盖返回地址，劫持控制流 针对数据流的攻击-》针对控制流的攻击 got表和plt表和延迟绑定got表里面就是全局偏移的地址 plt是一些代码，有两个功能，如果.got.plt里面已经
+          Pwnpwn保护机制Linux： Canary：设置栈cookie 检测栈是否被破坏。 NX（Non-Execution）：和Windows下的DEP类似，就是将数据所在的内存页标记为不可执行。 RELRO（Relocation Read Only）：got表不可写。 PIE（Position Independent Execution）：位置无关的执行，不会有进行绝对地址的跳转，而是通过全局偏移
         </div>
       </a>
 
@@ -424,7 +457,7 @@
       <a class="index-excerpt" href="/2022/07/12/netSec/" target="_self">
         <div>
           
-          蠕虫病毒以Morris Worm为例，最基本的蠕虫病毒需要满足以下条件  通过网络&#x2F;任何可以传播的媒介抵达受害者主机并可以继续传播（主要就是互联网，或者以太网） 对一个或多个漏洞进行利用，实现RCE（受害者的主机需要运行有漏洞的程序&#x2F;操作系统） 可以进行自我复制（第一种可以实现纯代码的自我复制，比较复杂；第二种可以使用网络进行恶意脚本的下载，通常使用链式传播，也就是从先驱来下载
+          抓包和伪造Python 的 scapy 模块可以用来抓包，需要运行在高权限模式下。使用 Berkeley Packet Filter 可以设置过滤器，用来抓取指定规则下的包。按理来说，在混杂模式下，在一个使用hub（集线器）的共享网络中，一个电脑可以监听整个LAN内的数据包，即使该数据包的目的地址不是这个电脑。但实际情况现有的交换机设备不会将这些没用的数据包发给我们，只有那些真正需要广播的数据，才
         </div>
       </a>
 
@@ -464,7 +497,7 @@
       <a class="index-excerpt" href="/2022/07/05/x86%E6%8C%87%E4%BB%A4%E9%9B%86%E7%AE%80%E4%BB%8B/" target="_self">
         <div>
           
-          寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 12345678910111213AH&amp;AL＝AX(accumulator)：累加寄存器 BH&amp;BL＝BX(base)：基址寄存器 CH&amp;
+          寄存器  处理器针对ax系列寄存器做了优化，因此ax相关的指令效率较高，常用于shellcode编写。 rip, eip, ip 是当前执行指令的地址，也就是pc。不能被直接修改，但可以被jmp, call, 和ret 等指令间接修改。 x86寄存器分类： 8个通用寄存器：EAX、EBX、ECX、EDX、ESI、EDI、ESP、EBP 12345678AH&amp;AL＝AX(accumulato
         </div>
       </a>
 
@@ -563,46 +596,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Binary-Security/">#Binary Security</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/04/17/CSRF/" target="_self">
-          CSRF vulnerability
-        </a>
-      </h1>
-
-      <a class="index-excerpt" href="/2022/04/17/CSRF/" target="_self">
-        <div>
-          
-          跨域请求伪造（XSRF&#x2F;CSRF: Cross-Site Request Forgery）漏洞介绍与之前介绍的XSS漏洞不同，想要触发CSRF漏洞，需要两个条件。第一，用户已经登陆一个受信任的网站，例如http:&#x2F;&#x2F;www.a.com，并生成了cookie并且这个认证没有过期（并不一定需要打开这个tag页，有一些cookie并不是关闭页面以后立即过期的）。第二，需要攻击者诱导用户点击一个
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-04-17 19:54" pubdate>
-              2022-04-17
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Web-Security/">#Web Security</a>
             
           </div>
         

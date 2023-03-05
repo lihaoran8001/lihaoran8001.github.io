@@ -16,23 +16,24 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Pwnpwn保护机制编译选项： Canary设置栈cookie 检测栈是否被破坏 NX堆栈不可执行 RELRO got表不可写 系统策略： ASLR栈base随机化 PIE代码和地址无关 栈溢出通过溢出栈上的缓冲区从而覆盖返回地址，劫持控制流 针对数据流的攻击-》针对控制流的攻击 got表和plt表和延迟绑定got表里面就是全局偏移的地址 plt是一些代码，有两个功能，如果.got.plt里面已经">
+    <meta name="description" content="Pwnpwn保护机制Linux： Canary：设置栈cookie 检测栈是否被破坏。 NX（Non-Execution）：和Windows下的DEP类似，就是将数据所在的内存页标记为不可执行。 RELRO（Relocation Read Only）：got表不可写。 PIE（Position Independent Execution）：位置无关的执行，不会有进行绝对地址的跳转，而是通过全局偏移">
 <meta property="og:type" content="article">
 <meta property="og:title" content="interview">
 <meta property="og:url" content="https://lihaoran8001.github.io/2022/07/27/interview/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="Pwnpwn保护机制编译选项： Canary设置栈cookie 检测栈是否被破坏 NX堆栈不可执行 RELRO got表不可写 系统策略： ASLR栈base随机化 PIE代码和地址无关 栈溢出通过溢出栈上的缓冲区从而覆盖返回地址，劫持控制流 针对数据流的攻击-》针对控制流的攻击 got表和plt表和延迟绑定got表里面就是全局偏移的地址 plt是一些代码，有两个功能，如果.got.plt里面已经">
+<meta property="og:description" content="Pwnpwn保护机制Linux： Canary：设置栈cookie 检测栈是否被破坏。 NX（Non-Execution）：和Windows下的DEP类似，就是将数据所在的内存页标记为不可执行。 RELRO（Relocation Read Only）：got表不可写。 PIE（Position Independent Execution）：位置无关的执行，不会有进行绝对地址的跳转，而是通过全局偏移">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://introspelliam.github.io/images/2017-07-07/RtlIsValidHandler.jpg">
 <meta property="og:image" content="https://s2.51cto.com/images/blog/202108/21/da81163f54aff6dec4483eeed52a5b9e.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_30,g_se,x_10,y_10,shadow_20,type_ZmFuZ3poZW5naGVpdGk=">
 <meta property="og:image" content="https://bbs.pediy.com/upload/attach/201911/540885_3ACMWPTB4ZNCF2F.png">
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/luoyesiqiu/1643996/o_200213062347inlinehook.png">
 <meta property="og:image" content="https://images2015.cnblogs.com/blog/464291/201707/464291-20170703113844956-354755333.jpg">
 <meta property="article:published_time" content="2022-07-27T08:29:51.000Z">
-<meta property="article:modified_time" content="2022-08-11T12:06:06.000Z">
+<meta property="article:modified_time" content="2022-10-13T10:42:19.583Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="interview experience">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://s2.51cto.com/images/blog/202108/21/da81163f54aff6dec4483eeed52a5b9e.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_30,g_se,x_10,y_10,shadow_20,type_ZmFuZ3poZW5naGVpdGk=">
+<meta name="twitter:image" content="https://introspelliam.github.io/images/2017-07-07/RtlIsValidHandler.jpg">
   
   
   <title>interview - 1nt3rva1&#39;s personal blog</title>
@@ -215,7 +216,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.7k 字
+          10k 字
         
       </span>
     
@@ -226,7 +227,7 @@
         
         
         
-          23 分钟
+          34 分钟
         
       </span>
     
@@ -276,47 +277,94 @@
             
             <div class="markdown-body">
               
-              <h3 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h3><h4 id="pwn保护机制"><a href="#pwn保护机制" class="headerlink" title="pwn保护机制"></a>pwn保护机制</h4><p>编译选项：</p>
-<p>Canary设置栈cookie 检测栈是否被破坏</p>
-<p>NX堆栈不可执行</p>
-<p>RELRO got表不可写</p>
-<p>系统策略：</p>
-<p>ASLR栈base随机化 PIE代码和地址无关</p>
-<h4 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h4><p>通过溢出栈上的缓冲区从而覆盖返回地址，劫持控制流</p>
-<p>针对数据流的攻击-》针对控制流的攻击</p>
-<h4 id="got表和plt表和延迟绑定"><a href="#got表和plt表和延迟绑定" class="headerlink" title="got表和plt表和延迟绑定"></a>got表和plt表和延迟绑定</h4><p>got表里面就是全局偏移的地址</p>
+              <h3 id="Pwn"><a href="#Pwn" class="headerlink" title="Pwn"></a>Pwn</h3><h4 id="pwn保护机制"><a href="#pwn保护机制" class="headerlink" title="pwn保护机制"></a>pwn保护机制</h4><p>Linux：</p>
+<p>Canary：设置栈cookie 检测栈是否被破坏。</p>
+<p>NX（Non-Execution）：和Windows下的DEP类似，就是将数据所在的内存页标记为不可执行。</p>
+<p>RELRO（Relocation Read Only）：got表不可写。</p>
+<p>PIE（Position Independent Execution）：位置无关的执行，不会有进行绝对地址的跳转，而是通过全局偏移表来进行访存。</p>
+<p>ASLR（Address Space Layout Randomization）根据开启的不同程度，决定栈&#x2F;mmap&#x2F;堆base随机化</p>
+<p>Windows:</p>
+<p>DEP (Data Execution Prevention) 对数据页进行保护，例如存放栈数据的内存页不可以被执行，如果执行的话就会抛出异常。分为软件DEP和硬件DEP；硬件DEP需要CPU支持。和</p>
+<p>SafeSEH（Safe Structured Exception Handler）：是一个编译选项，开启之后在进行Exception Handler的跳转时会首先检验其安全性，例如是否在模块内存范围内，是否在可执行页上等等。</p>
+<p><img src="https://introspelliam.github.io/images/2017-07-07/RtlIsValidHandler.jpg" srcset="/img/loading.gif" lazyload alt="RtlIsValidHandler校验流程"></p>
+<h4 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h4><p>通过溢出栈上的缓冲区从而覆盖栈中的临时变量&#x2F;地址 -&gt; 针对数据流的攻击</p>
+<p>也可以覆盖返回地址，劫持控制流。从针对数据流的攻击变为了针对控制流的攻击</p>
+<p>在Windows下，可以通过栈溢出覆盖异常处理的结构（Structured Exception Handler），当异常被触发时就可以劫持控制流</p>
+<h4 id="C-虚函数漏洞利用-虚函数结构"><a href="#C-虚函数漏洞利用-虚函数结构" class="headerlink" title="C++虚函数漏洞利用 虚函数结构"></a>C++虚函数漏洞利用 虚函数结构</h4><p>在一个类中如果有虚函数，那么内存中就会有一个虚表指针会放在成员变量的上方，如果可以有机会对这个虚表指针进行写入，那么就可以将其指向一个伪造的虚表，从而劫持控制流，虚表指针指向的是虚函数表，这个表里面放的是函数的实际地址，我们也可以修改这个虚函数表的中的项来劫持控制流。</p>
+<h4 id="got-Global-Offset-table-表和plt-Procedure-Linkage-Table-表和延迟绑定"><a href="#got-Global-Offset-table-表和plt-Procedure-Linkage-Table-表和延迟绑定" class="headerlink" title="got(Global Offset table)表和plt(Procedure Linkage Table)表和延迟绑定"></a>got(Global Offset table)表和plt(Procedure Linkage Table)表和延迟绑定</h4><p>got表里面就是全局偏移的地址</p>
 <p>plt是一些代码，有两个功能，如果.got.plt里面已经有地址，那么就去拿到并跳转，如果.got.plt里面没有地址，那么就触发链接器去加载对应的地址。</p>
-<h4 id="rop"><a href="#rop" class="headerlink" title="rop"></a>rop</h4><p>栈溢出漏洞的一种利用，如果开启了堆栈不可执行，通过跳转至一些以ret结束的代码片段中来执行恶意逻辑，栈中布置了相应的rop链和参数，多个代码片段可能可以保证图灵完整性。</p>
-<h4 id="chunk结构"><a href="#chunk结构" class="headerlink" title="chunk结构"></a>chunk结构</h4><p>prev_size 如果上一个chunk是释放的，就用来表示其大小，否则用来保存上一个chunk的数据</p>
+<h4 id="ROP（Return-Oriented-Programming）"><a href="#ROP（Return-Oriented-Programming）" class="headerlink" title="ROP（Return Oriented Programming）"></a>ROP（Return Oriented Programming）</h4><p>栈溢出漏洞的一种利用，如果开启了堆栈不可执行，通过跳转至一些以ret结束的代码片段中来执行恶意逻辑，栈中布置了相应的rop链和参数，多个代码片段可能可以保证图灵完整性。</p>
+<h4 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆(Heap)"></a>堆(Heap)</h4><h5 id="chunk结构"><a href="#chunk结构" class="headerlink" title="chunk结构"></a>chunk结构</h5><p>prev_size 如果上一个chunk是释放的，就用来表示其大小，否则用来保存上一个chunk的数据</p>
 <p>size&amp;flag 当前chunk的大小 最后三个bit表示 1是否属于主线程 2是否mmap申请 3上一个chunk是否被使用</p>
 <p>fd下一个chunk bk上一个chunk 仅在释放时有效 如果被申请 那么就时用户内存的一部分</p>
 <p>fd_nextsize 和 bk_nextsize 用于largebin 同样是释放时才有效</p>
 <p><img src="https://s2.51cto.com/images/blog/202108/21/da81163f54aff6dec4483eeed52a5b9e.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_30,g_se,x_10,y_10,shadow_20,type_ZmFuZ3poZW5naGVpdGk=" srcset="/img/loading.gif" lazyload alt="【pwn】学pwn日记（堆结构学习）_主线程_09"></p>
-<h4 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h4><p>如果我们申请了两个堆块，通过溢出第一个堆块可以覆盖第二个堆size&amp;flag，fd，bk等等结构，当free第一个堆块时，会通过检查下下个堆块的flag来检查第二个是否空闲，我们可以控制第二个堆的size来使得检查通过，那么就会触发unlink宏。</p>
+<h5 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h5><p>如果我们申请了两个堆块，通过溢出第一个堆块可以覆盖第二个堆size&amp;flag，fd，bk等等结构，当free第一个堆块时，会通过检查下下个堆块的flag来检查第二个是否空闲，我们可以控制第二个堆的size来使得检查通过，那么就会触发unlink宏。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">#!c<br>BK=second-&gt;bk（在例子中bk实际上是shellcode的地址）<br>FD=second-&gt;fd (在例子中fd实际上是<span class="hljs-built_in">free</span>@got的地址 - <span class="hljs-number">12</span>)<br>FD-&gt;bk=BK<br><span class="hljs-comment">/*shellcode的地址被写进了FD+12的位置，但是FD是free@got的地址-12，所以实际上我们已经把shellcode地址写入了free@got*/</span><br>BK-&gt;fd=FD <br></code></pre></td></tr></table></figure>
 
 <p>这段代码的主要操作是将第二块chunk从链中解除，从而把第一块和第二块合并，将合并后的与第三块相连。</p>
 <p>因为溢出的时候我们可以覆盖第二块的fd，bk，我们就可以使得系统认为第二块是空的，进而完成合并。可以利用这个逻辑来实现任意地址写任意值，例如，可以写got表来使得下次调用某函数时执行shellcode。</p>
-<h4 id="UAF"><a href="#UAF" class="headerlink" title="UAF"></a>UAF</h4><p>使用free函数回收buffer以后，指向该地址的指针是否被重置，如果被重置以后再使用，那程序就会崩溃，如果没有被重置，程序很有可能正常运行，如果后续存在操作使用malloc函数重新分配的空间分配到之前被free回收的buffer区域，那就可以利用填充内容进行恶意操作</p>
-<h4 id="Double-free"><a href="#Double-free" class="headerlink" title="Double free"></a>Double free</h4><p>就是已经free过的一块内存，因为程序的逻辑问题，还可以再free一次</p>
+<h5 id="UAF（Use-After-Free）"><a href="#UAF（Use-After-Free）" class="headerlink" title="UAF（Use-After-Free）"></a>UAF（Use-After-Free）</h5><p>使用free函数回收buffer以后，指向该地址的指针是否被重置，如果被重置以后再使用，那程序就会崩溃，如果没有被重置，程序很有可能正常运行，如果后续存在操作使用malloc函数重新分配的空间分配到之前被free回收的buffer区域，那就可以利用填充内容进行恶意操作</p>
+<h5 id="Double-free"><a href="#Double-free" class="headerlink" title="Double free"></a>Double free</h5><p>就是已经free过的一块内存，因为程序的逻辑问题，还可以再free一次</p>
 <p>在第二次free之前可能可以申请一个内存，占用这块空间，在这块空间中布置好虚假的chunk头信息，free触发unlink漏洞</p>
-<h4 id="C-虚函数-突然问虚函数怎么漏洞利用-虚函数结构"><a href="#C-虚函数-突然问虚函数怎么漏洞利用-虚函数结构" class="headerlink" title="C++虚函数 突然问虚函数怎么漏洞利用 虚函数结构"></a>C++虚函数 突然问虚函数怎么漏洞利用 虚函数结构</h4><p>在一个类中如果有虚函数，那么内存中就会有一个虚表指针会放在成员变量的上方，如果可以有机会对这个虚表指针进行写入，那么就可以将其指向一个伪造的虚表，从而劫持控制流，虚表指针指向的是虚函数表，这个表里面放的是函数的实际地址，我们也可以修改这个虚函数表的中的项来劫持控制流。</p>
-<h4 id="讲漏洞（感觉面试官不会这个，我就从0开始讲）"><a href="#讲漏洞（感觉面试官不会这个，我就从0开始讲）" class="headerlink" title="讲漏洞（感觉面试官不会这个，我就从0开始讲）"></a>讲漏洞（感觉面试官不会这个，我就从0开始讲）</h4><p>栈溢出，堆溢出，整形溢出，格式化字符串，系统安全漏洞，竞态条件。。。</p>
+<h4 id="其他的漏洞"><a href="#其他的漏洞" class="headerlink" title="其他的漏洞"></a>其他的漏洞</h4><p>栈溢出，堆溢出，整形溢出，格式化字符串，系统安全漏洞，竞态条件。。。</p>
 <p>整数溢出：</p>
 <p>正整数的最大值为 0x7fffffff  也就是十进制的 2147483647</p>
 <p>正整数的最小值为 0x00000001 也就是十进制的 1</p>
 <p>0表示为：0x00000000 </p>
 <p>负整数的最大值为 0xffffffff 也就是十进制的 -1</p>
 <p>负整数的最小值为 0x80000000 也就是十进制的 -2147483648</p>
-<h4 id="问了好几次怎么提权（system函数，execve函数等，他好像不信？）"><a href="#问了好几次怎么提权（system函数，execve函数等，他好像不信？）" class="headerlink" title="问了好几次怎么提权（system函数，execve函数等，他好像不信？）"></a>问了好几次怎么提权（system函数，execve函数等，他好像不信？）</h4><p>如果本身存在一个Setuid有漏洞的特权程序，可以利用程序的漏洞写shellcode来提权</p>
-<p>如果是一个普通程序，就利用SetUid程序，利用系统漏洞，dirtycow等等</p>
-<h4 id="DLL注入（被质疑了一手，后来发现他在唬我，生气哼）"><a href="#DLL注入（被质疑了一手，后来发现他在唬我，生气哼）" class="headerlink" title="DLL注入（被质疑了一手，后来发现他在唬我，生气哼）"></a>DLL注入（被质疑了一手，后来发现他在唬我，生气哼）</h4><p>向运行中的其他进程强行注入dll文件，用来执行恶意代码</p>
+<h4 id="DLL注入"><a href="#DLL注入" class="headerlink" title="DLL注入"></a>DLL注入</h4><p>向运行中的其他进程强行注入dll文件，用来执行恶意代码</p>
 <p>加载输入表中的dll，修改PE等等</p>
 <p>loadlibrary动态加载，创建新线程，修改eip</p>
-<h4 id="简单讲讲你简历说的漏洞利用"><a href="#简单讲讲你简历说的漏洞利用" class="headerlink" title="简单讲讲你简历说的漏洞利用"></a>简单讲讲你简历说的漏洞利用</h4><p>主要就是堆栈溢出后&#x2F;命令注入等等 执行shellcode，或者system函数来开启反弹shell等</p>
-<h4 id="如何通过堆漏洞获取libc（后来才会orz）"><a href="#如何通过堆漏洞获取libc（后来才会orz）" class="headerlink" title="如何通过堆漏洞获取libc（后来才会orz）"></a>如何通过堆漏洞获取libc（后来才会orz）</h4><h3 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h3><h4 id="永恒之蓝漏洞"><a href="#永恒之蓝漏洞" class="headerlink" title="永恒之蓝漏洞"></a>永恒之蓝漏洞</h4><p>利用了windows的SMB协议，可以攻击445端口获取主机最高权限</p>
+<h3 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h3><h4 id="逆向时常见的文件系统"><a href="#逆向时常见的文件系统" class="headerlink" title="逆向时常见的文件系统"></a>逆向时常见的文件系统</h4><p>linux：ext4，squashfs，cramfs（Read Only），jffs2</p>
+<p>windows：NTFS FAT</p>
+<h4 id="JTAG"><a href="#JTAG" class="headerlink" title="JTAG"></a>JTAG</h4><h5 id="14针"><a href="#14针" class="headerlink" title="14针"></a>14针</h5><p>1 、 13 　 VCC 接电源</p>
+<p>2 、 4 、 6 、 8 、 10 、 14 　 GND 接地</p>
+<p>3 　nTRST 　测试系统复位信号</p>
+<p>5 　TDI 　 测试数据串行输入</p>
+<p>7 　TMS 　测试模式选择</p>
+<p>9 　TCK 　测试时钟</p>
+<p>11　TDO 　 测试数据串行输出</p>
+<p>12　NC 　 未连接</p>
+<h5 id="20针"><a href="#20针" class="headerlink" title="20针"></a>20针</h5><p>1　VTref 　 目标板参考电压，接电源</p>
+<p>2 VCC 　 接电源</p>
+<p>3 nTRST 　 测试系统复位信号</p>
+<p>4、6、8、10、12、14、16、18、20 　GND 接地</p>
+<p>5 TDI 　 测试数据串行输入</p>
+<p>7 TMS 　 测试模式选择</p>
+<p>9 TCK 　 测试时钟</p>
+<p>11 RTCK 　测试时钟返回信号</p>
+<p>13 TDO 　 测试数据串行输出</p>
+<p>15 nRESET 　 目标系统复位信号</p>
+<p>17 、 19 NC 　未连接</p>
+<h4 id="获取设备固件的方法"><a href="#获取设备固件的方法" class="headerlink" title="获取设备固件的方法"></a>获取设备固件的方法</h4><h5 id="网络获取"><a href="#网络获取" class="headerlink" title="网络获取"></a>网络获取</h5><p>官网或联系售后索取升级包<br>适用于官网提供下载智能设备固件的情况<br>有的厂家只能从代理和官方的售后提供固件</p>
+<h5 id="在线升级-抓包获取下载地址"><a href="#在线升级-抓包获取下载地址" class="headerlink" title="在线升级, 抓包获取下载地址"></a>在线升级, 抓包获取下载地址</h5><p>wireshark配合热点抓设备升级的包<br>burpsuite抓APP请求设备升级的包<br>如果能够抓取到升级的数据包，可以根据命名规则猜测老固件下载地址；</p>
+<h5 id="串口"><a href="#串口" class="headerlink" title="串口"></a>串口</h5><p>用硬件电路的调试串口和固件的bootloader获取固件<br>前提是能找到隐藏的UART<br>万用表识别、逻辑分析仪识别监听；<br>接口引线；<br>从硬件串口获取系统权限后,用tar、nc、dd、echo、vi等命令提取固件<br>前提是已获取shell权限（网络或串口）；</p>
+<p>存在ifconfig、nc、tar（zip、dd）命令；</p>
+<p>用法：</p>
+<p>在串口命令模式下：<br>用tar打包固件，或用dd命令提取固件；<br>用ifconfig配置ip地址；用nc命令连接本地机器；<br>通过nc命令传送打包后的固件</p>
+<h5 id="调试口"><a href="#调试口" class="headerlink" title="调试口"></a>调试口</h5><p>从硬件调试接口:JTAG&#x2F;SWD, 利用调试工具的任意地址读取功能<br>存在JTAG接口的设备，直接用Jlink连接读取</p>
+<h5 id="读取flash"><a href="#读取flash" class="headerlink" title="读取flash"></a>读取flash</h5><p>拆Flash、Sd卡、TF卡、硬盘等,用编程器或对应设备读固件<br>想办法弄下Flash，用编程器读取固件内容，有本事的还可以焊回去。</p>
+<p>如果是MCU单片机，可以使用JTAG或者ST-LINK读取固件 JTAG有一个工具叫JFLASH可以读取</p>
+<p>RT809：可以自动识别flash类型，自动提取</p>
+<p>Flashrom：GitHub - espressif&#x2F;esptool: Espressif SoC serial bootloader utility</p>
+<h5 id="用逻辑分析仪监听flash-ram获取信息"><a href="#用逻辑分析仪监听flash-ram获取信息" class="headerlink" title="用逻辑分析仪监听flash,ram获取信息"></a>用逻辑分析仪监听flash,ram获取信息</h5><p>用逻辑分析仪配合对应的软件，监听SPI flash获取信息，并保存二进制文件；</p>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><p>逆向升级软件,软件内置解包和通讯算法<br>逆向破解上位机，烧录工具</p>
+<p>对软件进行抓包分析</p>
+<p>通过利用网页和通讯漏洞获取固件敏感信息<br>存在web功能</p>
+<p>任意文件读取</p>
+<p>命令执行等漏洞</p>
+<h4 id="windows漏洞的命名"><a href="#windows漏洞的命名" class="headerlink" title="windows漏洞的命名"></a>windows漏洞的命名</h4><p>Windows系统漏洞微软的漏洞编号命名格式为：MS08067<br>MS Micosoft的缩写，固定格式；<br>08 表示年份，即2008年发布的漏洞；<br>067 表示顺序，即当年度发布的第67个漏洞。</p>
+<h4 id="网络信息系统安全的三道防线"><a href="#网络信息系统安全的三道防线" class="headerlink" title="网络信息系统安全的三道防线"></a>网络信息系统安全的三道防线</h4><ol>
+<li>系统自身没有漏洞</li>
+<li>防病毒和IDS，入侵系统检测等等</li>
+<li>数据库备份</li>
+</ol>
+<h4 id="c-stdcall"><a href="#c-stdcall" class="headerlink" title="c++ stdcall"></a>c++ stdcall</h4><p>函数参数从右向左入栈，被调用的函数负责清除栈内数据</p>
+<h4 id="进程和线程共享堆-但线程有自己的栈"><a href="#进程和线程共享堆-但线程有自己的栈" class="headerlink" title="进程和线程共享堆 但线程有自己的栈"></a>进程和线程共享堆 但线程有自己的栈</h4><h4 id="永恒之蓝漏洞"><a href="#永恒之蓝漏洞" class="headerlink" title="永恒之蓝漏洞"></a>永恒之蓝漏洞</h4><p>利用了windows的SMB协议，可以攻击445端口获取主机最高权限</p>
 <h4 id="反向连接后门"><a href="#反向连接后门" class="headerlink" title="反向连接后门"></a>反向连接后门</h4><p>由于有防火墙的原因，可能无法从外部连接到目标设备，此时可以利用漏洞，在攻击者的机器上开启一个监听端口，由目标设备主动连接至攻击者的机器，大部分的防火墙对传出的连接没有过多限制。</p>
-<h4 id="ARP欺骗"><a href="#ARP欺骗" class="headerlink" title="ARP欺骗"></a>ARP欺骗</h4><p>在局域网&#x2F;以太网内，通过发送虚假的ARP数据包，导致设备发送的网络流量被重定向到任意的MAC地址，攻击者可以进行窃取，修改或者拒绝服务攻击。</p>
+<h4 id="ARP-Address-Resolution-Protocol-欺骗"><a href="#ARP-Address-Resolution-Protocol-欺骗" class="headerlink" title="ARP(Address Resolution Protocol)欺骗"></a>ARP(Address Resolution Protocol)欺骗</h4><p>在局域网&#x2F;以太网内，通过发送虚假的ARP数据包，导致设备发送的网络流量被重定向到任意的MAC地址，攻击者可以进行窃取，修改或者拒绝服务攻击。</p>
 <h4 id="PE文件结构和ELF文件结构"><a href="#PE文件结构和ELF文件结构" class="headerlink" title="PE文件结构和ELF文件结构"></a>PE文件结构和ELF文件结构</h4><p>elf文件结构，链接视角，分成了不同的节区section，.text .data(已初始化的静态变量) .rodata（只读变量） .bss（未初始化的全局变量） .got .plt等等</p>
 <p>装载视角，相同的读写执行权限的会被装载到同一个segment，但要进行页对齐。</p>
 <p><img src="https://bbs.pediy.com/upload/attach/201911/540885_3ACMWPTB4ZNCF2F.png" srcset="/img/loading.gif" lazyload alt="img"></p>
@@ -366,7 +414,7 @@
 <h4 id="文件执行的过程"><a href="#文件执行的过程" class="headerlink" title="文件执行的过程"></a>文件执行的过程</h4><h4 id="控制流平坦化"><a href="#控制流平坦化" class="headerlink" title="控制流平坦化"></a>控制流平坦化</h4><p>代码本来是按照逻辑顺序执行的，平坦化指的是把代码的基本块拆分，把本来顺序执行的代码用switch case打乱分发，用一个变量来连接起来，是一种混淆的方法，可以增大被分析的难度。是一个编译选项。</p>
 <h4 id="反混淆"><a href="#反混淆" class="headerlink" title="反混淆"></a>反混淆</h4><p>符号执行</p>
 <h4 id="设计混淆方法"><a href="#设计混淆方法" class="headerlink" title="设计混淆方法"></a>设计混淆方法</h4><p>隐藏变量名&#x2F;函数名&#x2F;类名</p>
-<h4 id="inlinehook"><a href="#inlinehook" class="headerlink" title="inlinehook"></a>inlinehook</h4><p>以x86指令为例，inline hook指的是修改原本程序中的call指令，变成jmp指令跳转到我们的函数，然后我们在函数里面可以读取原本调用函数的参数等等，然后再跳转到原来的函数，最后返回到call的下一条指令。</p>
+<h4 id="inlinehook"><a href="#inlinehook" class="headerlink" title="inlinehook"></a>inlinehook</h4><p>以x86指令为例，inline hook指的是修改原 本程序中的call指令，变成jmp指令跳转到我们的函数，然后我们在函数里面可以读取原本调用函数的参数等等，然后再跳转到原来的函数，最后返回到call的下一条指令。</p>
 <p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/luoyesiqiu/1643996/o_200213062347inlinehook.png"><img src="https://images.cnblogs.com/cnblogs_com/luoyesiqiu/1643996/o_200213062347inlinehook.png" srcset="/img/loading.gif" lazyload alt="img"></a></p>
 <p>也可以对目标函数的前N个byte放到hook函数里</p>
 <p>目标函数的前N个byte用来跳转到hook函数</p>
@@ -393,7 +441,15 @@
 <h4 id="静态和动态的区别"><a href="#静态和动态的区别" class="headerlink" title="静态和动态的区别"></a>静态和动态的区别</h4><p>静态的话主要是看程序的逻辑问题，动态的话主要是利用</p>
 <h4 id="gdb，od，ida的区别"><a href="#gdb，od，ida的区别" class="headerlink" title="gdb，od，ida的区别"></a>gdb，od，ida的区别</h4><p>gdb是linux下的debugger，od是windows下的debugger，ida是反汇编&#x2F;反编译工具</p>
 <h4 id="汇编怎么找代码对应的地址"><a href="#汇编怎么找代码对应的地址" class="headerlink" title="汇编怎么找代码对应的地址"></a>汇编怎么找代码对应的地址</h4><p>装载base+文件中的函数offset</p>
-<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><h4 id="UDP和TCP报文方面的区别"><a href="#UDP和TCP报文方面的区别" class="headerlink" title="UDP和TCP报文方面的区别"></a>UDP和TCP报文方面的区别</h4><p>TCP的报文头部更长，UDP的比较短，因为TCP需要一些标志位来保证报文抵达，按顺序抵达，以及拥塞控制等等</p>
+<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><h4 id="linux端口占用的查询"><a href="#linux端口占用的查询" class="headerlink" title="linux端口占用的查询"></a>linux端口占用的查询</h4><ol>
+<li><p><code>lsof -i:80</code></p>
+</li>
+<li><p><code>netstat -tunlp | grep 80</code></p>
+</li>
+</ol>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs undefined">-t (tcp) 仅显示tcp相关选项<br>-u (udp)仅显示udp相关选项<br>-n 拒绝显示别名，能显示数字的全部转化为数字<br>-l 仅列出在Listen(监听)的服务状态<br>-p 显示建立相关链接的程序名       <br></code></pre></td></tr></table></figure>
+
+<h4 id="NTP服务端口：UDP123"><a href="#NTP服务端口：UDP123" class="headerlink" title="NTP服务端口：UDP123"></a>NTP服务端口：UDP123</h4><h4 id="UDP和TCP报文方面的区别"><a href="#UDP和TCP报文方面的区别" class="headerlink" title="UDP和TCP报文方面的区别"></a>UDP和TCP报文方面的区别</h4><p>TCP的报文头部更长，UDP的比较短，因为TCP需要一些标志位来保证报文抵达，按顺序抵达，以及拥塞控制等等</p>
 <h4 id="UDP和TCP有哪些区别"><a href="#UDP和TCP有哪些区别" class="headerlink" title="UDP和TCP有哪些区别"></a>UDP和TCP有哪些区别</h4><p>TCP										UDP</p>
 <p>面向连接的					 	无连接的&#x2F;不会对数据进行拆分，合并&#x2F;不用握手</p>
 <p>消耗系统资源多				消耗系统资源少</p>
@@ -406,14 +462,26 @@
 <h4 id="为什么UDP不如TCP安全"><a href="#为什么UDP不如TCP安全" class="headerlink" title="为什么UDP不如TCP安全"></a>为什么UDP不如TCP安全</h4><p>想要伪造一个UDP包很容易 甚至可以修改ip</p>
 <p>想要伪造一个tcp包首先不能修改ip 除非是syn flood 其次中途有seq 不太好劫持</p>
 <h4 id="TCP有什么漏洞（syn-flood攻击，TCP会话劫持攻击）"><a href="#TCP有什么漏洞（syn-flood攻击，TCP会话劫持攻击）" class="headerlink" title="TCP有什么漏洞（syn flood攻击，TCP会话劫持攻击）"></a>TCP有什么漏洞（syn flood攻击，TCP会话劫持攻击）</h4><p>syn flood</p>
+<p>可以通过</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sysctl -w net.ipv4.<span class="hljs-attribute">tcp_synvcookies</span>=1<br>表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭<br></code></pre></td></tr></table></figure>
+
 <p>会话劫持</p>
 <p>强制重传（降低效率）</p>
 <h4 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h4><p>通过公钥基础设施来协商一个共享的secret，用服务器的公钥加密，服务器自己的私钥解密，后续使用这个secret进行对称加密</p>
+<h4 id="SSL-pinning"><a href="#SSL-pinning" class="headerlink" title="SSL pinning"></a>SSL pinning</h4><p>把服务器的证书打包放进客户端里面，从而使得中间人攻击失败。</p>
+<p>破解方法就是要么在客户端找到这个证书并添加&#x2F;替换，要么hook最后校验的方法，让其返回true。</p>
 <h4 id="DNS解析过程"><a href="#DNS解析过程" class="headerlink" title="DNS解析过程"></a>DNS解析过程</h4><p>DNS是基于UDP的应用层协议</p>
 <h4 id="image-20220728111246564-x2F-Users-x2F-lihaoran-x2F-Library-x2F-Application-Support-x2F-typora-user-images-x2F-image-20220728111246564-png"><a href="#image-20220728111246564-x2F-Users-x2F-lihaoran-x2F-Library-x2F-Application-Support-x2F-typora-user-images-x2F-image-20220728111246564-png" class="headerlink" title="![image-20220728111246564](&#x2F;Users&#x2F;lihaoran&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220728111246564.png)"></a>![image-20220728111246564](&#x2F;Users&#x2F;lihaoran&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220728111246564.png)</h4><p><img src="https://images2015.cnblogs.com/blog/464291/201707/464291-20170703113844956-354755333.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>例如，如果查<a target="_blank" rel="noopener" href="http://www.163.com/">www.163.com</a></p>
 <p>顺序应该是先查hosts文件，然后查本地DNS服务器，如果均没有记录，本地DNS会查DNS根服务器，根服务器会告诉一个com域服务器，com域服务器会告诉163.com域服务器，163.com域服务器会返回ip地址，并缓存在本地DNS服务器中，最后发回给客户端。</p>
-<h3 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h3><h4 id="密码学算法，对称非对称随便说几个"><a href="#密码学算法，对称非对称随便说几个" class="headerlink" title="密码学算法，对称非对称随便说几个"></a>密码学<a target="_blank" rel="noopener" href="https://www.nowcoder.com/jump/super-jump/word?word=%E7%AE%97%E6%B3%95">算法</a>，对称非对称随便说几个</h4><p>非对称，RSA，DH</p>
+<p><strong>递归</strong>：客户端只发一次请求，要求对方给出最终结果。返回的结果只有两种：查询成功或查询失败。<br><strong>迭代</strong>：又称为“重指引”。客户端发出一次请求，对方如果没有<strong>授权回答</strong>（向dns服务器查询一个域名，刚好这个域名是本服务器负责，返回的结果就是授权回答），它就会返回一个能解答这个查询的其它名称服务器列表，客户端会再向返回的列表中发出请求，直到找到最终负责所查域名的名称服务器，从它得到最终结果。<br><strong>客户端-本地dns服务端</strong>：这部分属于<strong>递归</strong>查询。<br><strong>本地dns服务端-外网</strong>：这部分属于<strong>迭代</strong>查询。（不启用转发模式）</p>
+<h3 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h3><h4 id="x2F-etc-x2F-shadow文件"><a href="#x2F-etc-x2F-shadow文件" class="headerlink" title="&#x2F;etc&#x2F;shadow文件"></a>&#x2F;etc&#x2F;shadow文件</h4><p>同 &#x2F;etc&#x2F;passwd 文件一样，文件中每行代表一个用户，同样使用 “:” 作为分隔符，不同之处在于，每行用户信息被划分为 9 个字段。每个字段的含义如下：</p>
+<p>用户名：加密密码：最后一次修改时间：最小修改时间间隔：密码有效期：密码需要变更前的警告天数：密码过期后的宽限时间：账号失效时间：保留字段 </p>
+<p>这里保存的是真正加密的密码。目前 Linux 的密码采用的是 SHA512 散列加密算法，原来采用的是 MD5 或 DES 加密算法。SHA512 散列加密算法的加密等级更高，也更加安全。</p>
+<p>注意，这串密码产生的乱码不能手工修改，如果手工修改，系统将无法识别密码，导致密码失效。很多软件透过这个功能，在密码串前加上 “!”、”*” 或 “x” 使密码暂时失效。 </p>
+<p>所有伪用户的密码都是 “!!” 或 “*”，代表没有密码是不能登录的。当然，新创建的用户如果不设定密码，那么它的密码项也是 “!!”，代表这个用户没有密码，不能登录。</p>
+<h4 id="x2F-etc-x2F-passwd文件"><a href="#x2F-etc-x2F-passwd文件" class="headerlink" title="&#x2F;etc&#x2F;passwd文件"></a>&#x2F;etc&#x2F;passwd文件</h4><p>其中第一个位置为用户名称，root权限并不取决于用户的名称叫root，而是第三个位置的用户ID为0。第二个位置是密码，如果是x，那么密码就被存放在&#x2F;etc&#x2F;shadow文件中。我们也可以直接把密码的哈希值直接放在这里，这样就不用再去修改shadow文件了</p>
+<h4 id="密码学算法，对称非对称随便说几个"><a href="#密码学算法，对称非对称随便说几个" class="headerlink" title="密码学算法，对称非对称随便说几个"></a>密码学<a target="_blank" rel="noopener" href="https://www.nowcoder.com/jump/super-jump/word?word=%E7%AE%97%E6%B3%95">算法</a>，对称非对称随便说几个</h4><p>非对称，RSA，DH</p>
 <p>对称 AES DES 3DES</p>
 <p>摘要 MD5 SHA1 SHA256</p>
 <h4 id="常见的hash算法有哪些"><a href="#常见的hash算法有哪些" class="headerlink" title="常见的hash算法有哪些"></a>常见的hash<a href="">算法</a>有哪些</h4><p>（SHA256、SHA1，MD5） </p>
@@ -427,13 +495,14 @@
 <h4 id="AES的子密钥如何生成"><a href="#AES的子密钥如何生成" class="headerlink" title="AES的子密钥如何生成"></a>AES的子密钥如何生成</h4><p>keyExpansion 密钥扩展算法</p>
 <h4 id="了解MAC算法吗"><a href="#了解MAC算法吗" class="headerlink" title="了解MAC算法吗"></a>了解MAC<a href="">算法</a>吗</h4><p>就是在HASH的基础上又加入了密钥，保证中途原消息和摘要不被篡改</p>
 <h4 id="加盐hash："><a href="#加盐hash：" class="headerlink" title="加盐hash："></a>加盐hash：</h4><p>在hash保存密码之前加一段随机的盐，也保存这个盐在数据库中</p>
+<h4 id="数字签名："><a href="#数字签名：" class="headerlink" title="数字签名："></a>数字签名：</h4><p>A想要发给B一段消息，A先计算消息的摘要，然后用自己的私钥加密这个摘要，B接受到以后，用A的公钥揭开摘要，然后自己再算一遍摘要，看看能不能匹配，这样保证了消息是A发出的而不是别人</p>
 <h3 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h3><h4 id="web有哪些常见漏洞"><a href="#web有哪些常见漏洞" class="headerlink" title="web有哪些常见漏洞"></a>web有哪些常见漏洞</h4><p>XSS，csrf，</p>
 <h4 id="xss和csrf的区别"><a href="#xss和csrf的区别" class="headerlink" title="xss和csrf的区别"></a>xss和csrf的区别</h4><p>XSS是用户的输入被当作了返回的页面元素的一部分，被解释执行</p>
 <p>CSRF是用户在B恶意网站跨域向A网站发送了一条请求，请求会带上cookie从而使攻击成功</p>
 <h4 id="csrf如何防护"><a href="#csrf如何防护" class="headerlink" title="csrf如何防护"></a>csrf如何防护</h4><p>验证码，请求时要求与用户进行交互。</p>
 <p>Referer，说明是从哪个页面发出来的</p>
 <p>Secret token，提交的时候需要在服务器端验证这个token</p>
-<h4 id="SQL有基于布尔的盲注和基于时间的盲注"><a href="#SQL有基于布尔的盲注和基于时间的盲注" class="headerlink" title="SQL有基于布尔的盲注和基于时间的盲注"></a>SQL有基于布尔的盲注和基于时间的盲注</h4><h4 id="sql延时注入常用函数"><a href="#sql延时注入常用函数" class="headerlink" title="sql延时注入常用函数"></a>sql延时注入常用函数</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">sleep</span><span class="hljs-params">(<span class="hljs-number">1000</span>)</span></span> <br><span class="hljs-function"><span class="hljs-title">benchmark</span><span class="hljs-params">(<span class="hljs-number">100000000</span>,md5(<span class="hljs-number">1</span>)</span></span>)<br></code></pre></td></tr></table></figure>
+<h4 id="SQL有基于布尔的盲注和基于时间的盲注，还有基于报错的注入"><a href="#SQL有基于布尔的盲注和基于时间的盲注，还有基于报错的注入" class="headerlink" title="SQL有基于布尔的盲注和基于时间的盲注，还有基于报错的注入"></a>SQL有基于布尔的盲注和基于时间的盲注，还有基于报错的注入</h4><h4 id="sql延时注入常用函数"><a href="#sql延时注入常用函数" class="headerlink" title="sql延时注入常用函数"></a>sql延时注入常用函数</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">sleep</span><span class="hljs-params">(<span class="hljs-number">1000</span>)</span></span> <br><span class="hljs-function"><span class="hljs-title">benchmark</span><span class="hljs-params">(<span class="hljs-number">100000000</span>,md5(<span class="hljs-number">1</span>)</span></span>)<br></code></pre></td></tr></table></figure>
 
 <p>通过页面的反应时间来判断是否盲注成功</p>
 <h4 id="被称为XSS终结者"><a href="#被称为XSS终结者" class="headerlink" title="被称为XSS终结者"></a>被称为XSS终结者</h4><p>CSP 内容安全策略 只有带有指定nonce的script代码块才可以被执行 &#x2F; 只有指定域名的远程js代码才可以被执行</p>
@@ -445,7 +514,9 @@
 <h3 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h3><h4 id="全连接扫描和半开连接扫描的区别"><a href="#全连接扫描和半开连接扫描的区别" class="headerlink" title="全连接扫描和半开连接扫描的区别"></a>全连接扫描和半开连接扫描的区别</h4><p>全连接就是三次握手完成（准确&#x2F;容易被发现）</p>
 <p>半连接就是只发送SYN（不会有日志记录&#x2F;不是很准确）</p>
 <h4 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h4><p>就是如果目标主机B不可达 我们可以通过web服务器作为一个代理 利用服务器上面的漏洞对目标内网进行攻击</p>
-<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><h4 id="什么是稳定排序？"><a href="#什么是稳定排序？" class="headerlink" title="什么是稳定排序？"></a>什么是稳定排序？</h4><h4 id="链表排序"><a href="#链表排序" class="headerlink" title="链表排序"></a>链表排序</h4><h4 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h4><h4 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h4><h3 id="Android-amp-amp-ios"><a href="#Android-amp-amp-ios" class="headerlink" title="Android &amp;&amp; ios"></a>Android &amp;&amp; ios</h3><h4 id="Android四大组件分别为"><a href="#Android四大组件分别为" class="headerlink" title="Android四大组件分别为"></a>Android四大组件分别为</h4><p>activity、service、content provider、broadcast receiver</p>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><h4 id="什么是稳定排序？"><a href="#什么是稳定排序？" class="headerlink" title="什么是稳定排序？"></a>什么是稳定排序？</h4><h4 id="链表排序"><a href="#链表排序" class="headerlink" title="链表排序"></a>链表排序</h4><h4 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h4><h4 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h4><h3 id="Android-amp-amp-ios"><a href="#Android-amp-amp-ios" class="headerlink" title="Android &amp;&amp; ios"></a>Android &amp;&amp; ios</h3><h4 id="Xposed-框架"><a href="#Xposed-框架" class="headerlink" title="Xposed 框架"></a>Xposed 框架</h4><p>是一个android的hook框架，可以对任意app进行函数调用的拦截&#x2F;hook。原理：安卓系统启动以后会启动init进程，init进程会调用app_process文件来启动zygote进程，xposed通过替换app_process文件以及动态链接库，让zygote在启动app时注入框架代码，从而实现对程序app进程的劫持。</p>
+<p>框架中有一些关键方法，例如findAndHookMethod，findAndHookConstructor，findClass，findField原理就是首先找到需要hook对象的方法的地址，然后在这个地址处加入了before和after方法，让原本函数的调用可以按照before-original-after来执行</p>
+<h4 id="Android四大组件分别为"><a href="#Android四大组件分别为" class="headerlink" title="Android四大组件分别为"></a>Android四大组件分别为</h4><p>activity、service、content provider、broadcast receiver</p>
 <h4 id="ios调试"><a href="#ios调试" class="headerlink" title="ios调试"></a>ios调试</h4><p>IDA，lldb，cycript可以调试，theos是用来开发越狱app的，不能用来调试ios应用</p>
 <h4 id="iOS设备越狱后ssh连接的默认初始密码是"><a href="#iOS设备越狱后ssh连接的默认初始密码是" class="headerlink" title="iOS设备越狱后ssh连接的默认初始密码是"></a>iOS设备越狱后ssh连接的默认初始密码是</h4><p>alpine</p>
 <h4 id="apk-V1-V2签名"><a href="#apk-V1-V2签名" class="headerlink" title="apk V1 V2签名"></a>apk V1 V2签名</h4>

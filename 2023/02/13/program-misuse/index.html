@@ -16,21 +16,20 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="ARM指令集知识ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 BX(Branch and Exchange) 或 BLX(Br">
+    <meta name="description" content="一些程序，如果他们被设置了SUID位，那么他们将拥有特权权限，我们可以利用这些程序来读取被保护的文件。例如： cat, vim&#x2F;vi&#x2F;emacs, less&#x2F;more, head&#x2F;tail, gzip&#x2F;zip&#x2F;tar&#x2F;ar&#x2F;cpio, base32&#x2F;base64, split&#x2F;sort, od&#x2F;xxd实际上有非常多的命令可以被用来读取文件。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ARM&#x2F;MIPS指令集知识">
-<meta property="og:url" content="https://lihaoran8001.github.io/2022/08/12/ARM/index.html">
+<meta property="og:title" content="program misuse">
+<meta property="og:url" content="https://lihaoran8001.github.io/2023/02/13/program-misuse/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="ARM指令集知识ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 BX(Branch and Exchange) 或 BLX(Br">
+<meta property="og:description" content="一些程序，如果他们被设置了SUID位，那么他们将拥有特权权限，我们可以利用这些程序来读取被保护的文件。例如： cat, vim&#x2F;vi&#x2F;emacs, less&#x2F;more, head&#x2F;tail, gzip&#x2F;zip&#x2F;tar&#x2F;ar&#x2F;cpio, base32&#x2F;base64, split&#x2F;sort, od&#x2F;xxd实际上有非常多的命令可以被用来读取文件。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-12T08:57:01.000Z">
-<meta property="article:modified_time" content="2022-08-12T18:42:04.865Z">
+<meta property="article:published_time" content="2023-02-13T21:29:05.000Z">
+<meta property="article:modified_time" content="2023-02-14T13:40:32.099Z">
 <meta property="article:author" content="Haoran Li">
-<meta property="article:tag" content="Pwn">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>ARM/MIPS指令集知识 - 1nt3rva1&#39;s personal blog</title>
+  <title>program misuse - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -187,7 +186,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="ARM/MIPS指令集知识"></span>
+            <span id="subtitle" data-typed-text="program misuse"></span>
           
         </div>
 
@@ -198,8 +197,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-12 10:57" pubdate>
-          2022年8月12日 上午
+        <time datetime="2023-02-13 22:29" pubdate>
+          2023年2月13日 晚上
         </time>
       </span>
     
@@ -210,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          163 字
         
       </span>
     
@@ -221,7 +220,7 @@
         
         
         
-          5 分钟
+          1 分钟
         
       </span>
     
@@ -267,140 +266,11 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">ARM/MIPS指令集知识</h1>
+            <h1 style="display: none">program misuse</h1>
             
             <div class="markdown-body">
               
-              <h3 id="ARM指令集知识"><a href="#ARM指令集知识" class="headerlink" title="ARM指令集知识"></a>ARM指令集知识</h3><p>ARM指令属于精简指令集，指令数目较少，操作也更为原子化&#x2F;简单。Arm架构分为两种模式，ARM模式和Thumb模式，ARM指令为固定长度的4字节，Thumb的代码一般为2字节&#x2F;也存在4字节的指令。Thumb代码不具有完整的体系架构，只支持通用功能，必要时需要借助Arm指令。从Arm模式下，可以使用 <code>BX(Branch and Exchange)</code> 或 <code>BLX(Branch, Link and Exchange)</code> 来跳转至Thumb指令中开始执行，注意跳转到的目的地址需要比实际地址+1，这样并不会造成地址不对齐，这是跳转Thumb执行的规定。此外，ARM一般为大端序。</p>
-<h4 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h4><p>ARM指令集有共有37个寄存器，其中6个状态寄存器。有16个用户层可以访问和控制的寄存器，分为两组，通用寄存器和有特殊用途的寄存器。其中 <code>R0</code> - <code>R10</code> 为通用型寄存器，其余六个有特殊用途：</p>
-<table>
-<thead>
-<tr>
-<th>寄存器</th>
-<th align="left">别名</th>
-<th align="left">用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>R11</td>
-<td align="left">FP(Frame Pointer)</td>
-<td align="left">栈帧指针</td>
-</tr>
-<tr>
-<td>R12</td>
-<td align="left">IP</td>
-<td align="left">内部程序调用</td>
-</tr>
-<tr>
-<td>R13</td>
-<td align="left">SP(Stack Pointer)</td>
-<td align="left">栈指针</td>
-</tr>
-<tr>
-<td>R14</td>
-<td align="left">LR(Link Register)</td>
-<td align="left">链接寄存器（一般存放函数的返回地址）</td>
-</tr>
-<tr>
-<td>R15</td>
-<td align="left">PC(Program Counter)</td>
-<td align="left">程序计数寄存器</td>
-</tr>
-<tr>
-<td>CPSR</td>
-<td align="left">-</td>
-<td align="left">当前程序状态寄存器</td>
-</tr>
-</tbody></table>
-<p>在通用寄存器中，<code>R0</code> - <code>R3</code> 用来保存函数调用时的前四个参数，如果有更多的参数，需要保存在栈上。</p>
-<h4 id="指令特点"><a href="#指令特点" class="headerlink" title="指令特点"></a>指令特点</h4><p>Arm程序的指令都支持条件执行，也就是一条指令会通过判断标志位来决定是否执行，这样减少了不必要的分支指令，增加的代码密度。</p>
-<table>
-<thead>
-<tr>
-<th align="left">指令</th>
-<th align="left">含义</th>
-<th align="left">指令</th>
-<th align="left">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">MOV</td>
-<td align="left">移动数据</td>
-<td align="left">EOR</td>
-<td align="left">异或</td>
-</tr>
-<tr>
-<td align="left">MVN</td>
-<td align="left">取反码移动数据</td>
-<td align="left">LDR</td>
-<td align="left">加载数据</td>
-</tr>
-<tr>
-<td align="left">ADD</td>
-<td align="left">数据相加</td>
-<td align="left">STR</td>
-<td align="left">存储数据</td>
-</tr>
-<tr>
-<td align="left">SUB</td>
-<td align="left">数据相减</td>
-<td align="left">LDM</td>
-<td align="left">多次加载</td>
-</tr>
-<tr>
-<td align="left">MUL</td>
-<td align="left">数据相乘</td>
-<td align="left">STM</td>
-<td align="left">多次存储</td>
-</tr>
-<tr>
-<td align="left">LSL</td>
-<td align="left">逻辑左移</td>
-<td align="left">PUSH</td>
-<td align="left">压栈</td>
-</tr>
-<tr>
-<td align="left">LSR</td>
-<td align="left">逻辑右移</td>
-<td align="left">POP</td>
-<td align="left">出栈</td>
-</tr>
-<tr>
-<td align="left">ASR</td>
-<td align="left">算术右移</td>
-<td align="left">B</td>
-<td align="left">分支跳转</td>
-</tr>
-<tr>
-<td align="left">ROR</td>
-<td align="left">循环右移</td>
-<td align="left">BL</td>
-<td align="left">链接分支跳转</td>
-</tr>
-<tr>
-<td align="left">CMP</td>
-<td align="left">比较操作</td>
-<td align="left">BX</td>
-<td align="left">分支跳转切换</td>
-</tr>
-<tr>
-<td align="left">AND</td>
-<td align="left">比特位与</td>
-<td align="left">BLX</td>
-<td align="left">链接分支跳转切换</td>
-</tr>
-<tr>
-<td align="left">ORR</td>
-<td align="left">比特位或</td>
-<td align="left">SWI&#x2F;SVC</td>
-<td align="left">系统调用</td>
-</tr>
-</tbody></table>
-<p>连续存储&#x2F;加载指令：<code>LDM</code> 和 <code>STM</code></p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-constructor">IA(<span class="hljs-params">increase</span> <span class="hljs-params">after</span>)</span><br><span class="hljs-constructor">IB(<span class="hljs-params">increase</span> <span class="hljs-params">before</span>)</span><br><span class="hljs-constructor">DA(<span class="hljs-params">decrease</span> <span class="hljs-params">after</span>)</span><br><span class="hljs-constructor">DB(<span class="hljs-params">decrease</span> <span class="hljs-params">before</span>)</span><br></code></pre></td></tr></table></figure>
-
-<p>后面追加的指令表示是在操作前还是操作后递增&#x2F;递减</p>
-<h3 id="MIPS指令"><a href="#MIPS指令" class="headerlink" title="MIPS指令"></a>MIPS指令</h3><h4 id="寄存器-1"><a href="#寄存器-1" class="headerlink" title="寄存器"></a>寄存器</h4><p>MIPS有32个通用寄存器，用 <code>$0</code> - <code>$31</code> 来表示，也可以用寄存器名称如 <code>$t0</code> <code>$sp</code> 等等来表示。其中 <code>$0</code> 为永零寄存器，其中保存的值永远等于零；<code>$v0, $v1</code> 用来保存函数的返回值，<code>$a0-$a3</code> 用来存放函数的参数；<code>$t0-$t7</code> 为通用临时寄存器，用过之后不需要恢复，<code>$s0-$s7</code> 为保留的临时寄存器，使用完以后需要进行恢；<code>$gp(global pointer)</code> 为全局指针；<code>$sp, $fp</code> 分别为栈指针和栈帧指针；<code>$ra</code> 为返回地址 。还有3个特殊寄存器，为 <code>$pc, $hi, $lo</code> ，其中PC为程序计数器，HI和LO用来保存进行乘除运算时的高位结果和低位结果</p>
+              <p>一些程序，如果他们被设置了SUID位，那么他们将拥有特权权限，我们可以利用这些程序来读取被保护的文件。例如： <code>cat</code>, <code>vim/vi/emacs</code>, <code>less/more</code>, <code>head/tail</code>, <code>gzip/zip/tar/ar/cpio</code>, <code>base32/base64</code>, <code>split/sort</code>, <code>od/xxd</code><br>实际上有非常多的命令可以被用来读取文件。</p>
 
               
             </div>
@@ -408,13 +278,6 @@
             <div>
               <div class="post-metas my-3">
   
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Pwn/">#Pwn</a>
-      
-    </div>
   
 </div>
 
@@ -424,8 +287,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ARM/MIPS指令集知识</div>
-      <div>https://lihaoran8001.github.io/2022/08/12/ARM/</div>
+      <div>program misuse</div>
+      <div>https://lihaoran8001.github.io/2023/02/13/program-misuse/</div>
     </div>
     <div class="license-meta">
       
@@ -437,7 +300,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月12日</div>
+          <div>2023年2月13日</div>
         </div>
       
       
@@ -467,18 +330,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/02/13/program-misuse/" title="program misuse">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">program misuse</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/27/interview/" title="interview">
-                        <span class="hidden-mobile">interview</span>
+                      <a href="/2022/08/12/ARM/" title="ARM/MIPS指令集知识">
+                        <span class="hidden-mobile">ARM/MIPS指令集知识</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
