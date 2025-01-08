@@ -16,25 +16,27 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="PackGenome: Automatically Generating Robust YARA Rules for Accurate Malware Packer Detection (CCS’23)主流的加壳检测方法都是基于YARA规则的。用于检测的YARA规则之前主要是人工进行逆向分析生成的，文章提出了一种自动化生成YARA规则的检测程序加壳方法。从文章的名字可以看出，其利用了软件基因方法来">
+    <meta name="description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PackGenome:Windows加壳程序分析">
-<meta property="og:url" content="https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:title" content="RIoTFuzzer:远程IoT设备模糊测试方法">
+<meta property="og:url" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="PackGenome: Automatically Generating Robust YARA Rules for Accurate Malware Packer Detection (CCS’23)主流的加壳检测方法都是基于YARA规则的。用于检测的YARA规则之前主要是人工进行逆向分析生成的，文章提出了一种自动化生成YARA规则的检测程序加壳方法。从文章的名字可以看出，其利用了软件基因方法来">
+<meta property="og:description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/workflow.png">
-<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/mismatch.png">
-<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/lastupdate.png">
-<meta property="article:published_time" content="2025-01-08T01:41:01.000Z">
-<meta property="article:modified_time" content="2025-01-08T02:54:03.233Z">
+<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/typo.png">
+<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/method.png">
+<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/evaluation.png">
+<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/devices.png">
+<meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/geekpwn.jpg">
+<meta property="article:published_time" content="2025-01-08T02:55:02.000Z">
+<meta property="article:modified_time" content="2025-01-08T07:10:32.669Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Binary Security">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/workflow.png">
+<meta name="twitter:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/typo.png">
   
   
-  <title>PackGenome:Windows加壳程序分析 - 1nt3rva1&#39;s personal blog</title>
+  <title>RIoTFuzzer:远程IoT设备模糊测试方法 - 1nt3rva1&#39;s personal blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -191,7 +193,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="PackGenome:Windows加壳程序分析"></span>
+            <span id="subtitle" data-typed-text="RIoTFuzzer:远程IoT设备模糊测试方法"></span>
           
         </div>
 
@@ -202,7 +204,7 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-01-08 09:41" pubdate>
+        <time datetime="2025-01-08 10:55" pubdate>
           2025年1月8日 上午
         </time>
       </span>
@@ -214,7 +216,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          1.8k 字
         
       </span>
     
@@ -271,44 +273,41 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">PackGenome:Windows加壳程序分析</h1>
+            <h1 style="display: none">RIoTFuzzer:远程IoT设备模糊测试方法</h1>
             
             <div class="markdown-body">
               
-              <h1 id="PackGenome-Automatically-Generating-Robust-YARA-Rules-for-Accurate-Malware-Packer-Detection-CCS’23"><a href="#PackGenome-Automatically-Generating-Robust-YARA-Rules-for-Accurate-Malware-Packer-Detection-CCS’23" class="headerlink" title="PackGenome: Automatically Generating Robust YARA Rules for Accurate Malware Packer Detection (CCS’23)"></a>PackGenome: Automatically Generating Robust YARA Rules for Accurate Malware Packer Detection (CCS’23)</h1><p>主流的加壳检测方法都是基于YARA规则的。用于检测的YARA规则之前主要是人工进行逆向分析生成的，文章提出了一种自动化生成YARA规则的检测程序加壳方法。从文章的名字可以看出，其利用了软件基因方法来识别壳程序，此方法在各个指标性表现均超过了SOTA。</p>
-<h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation:"></a>Motivation:</h3><p>之前检测加壳程序的YARA规则主要由人工分析，专家经验生成，但是这种分析有3个弊端：</p>
-<ol>
-<li>人工付出的时间精力成本过高，一些复杂的加壳程序需要花费有经验的逆向分析人员N个人日（1&lt;N&lt;30)</li>
-<li>规则的产生主要依赖于人为经验，但这种经验很容易被进行针对性对抗与伪装</li>
-<li>如果有花指令，那么人为生成的YARA规则会产生较高的假阳性（人为产生的yara规则不够全面与完善）</li>
+              <h1 id="RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24"><a href="#RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24" class="headerlink" title="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)"></a>RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)</h1><p>这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。</p>
+<p>本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能家居设备如灯泡，智能插座，摄像头等等）进行协议层面的fuzz方法。与本地的fuzz不同，文章主要针对的是远程App控制命令的fuzz，也就是说，这些fuzz的报文都是由控制App发出，通过了服务器进行转发，再发送至设备上，所以叫R(emote) IoTFuzzer。这其中势必会用到针对安卓App的逆向分析，这里作者发现很多App都是用了基于JavaScript的mini-App，这当然就增加了逆向的难度（传统的针对java的方法没法直接用在这里）。最终作者通过对27个IoT设备进行模糊测试，找到了11个0day漏洞。</p>
+<h3 id="Motivation："><a href="#Motivation：" class="headerlink" title="Motivation："></a>Motivation：</h3><ol>
+<li>当前通过控制App针对IoT设备的fuzz方法都是在本地进行的，也就是在同一个局域网内部进行fuzz；但作者发现很多的IoT设备只能通过远端服务器进行访问。有一些IoT设备有本地局域网和远程两种控制方式，但他们在设备端的实现是不同的，所以远程访问是一个很值得去研究的范畴。</li>
+<li>现有的黑盒测试方法主要都针对安卓原生的Java实现，但是对新型的JS实现的mini-App支持不够好，这样的话就很难找到数据源，从而难以进行数据的变异等fuzz操作。</li>
 </ol>
-<h3 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge:"></a>Challenge:</h3><p>提取加壳程序的YARA规则有如下困难：</p>
-<ol>
-<li><p>对于检测加壳程序的YARA规则生成，没有一个标准的guideline，人为经验不可靠（没有方法论）</p>
-</li>
-<li><p>这些生成的规则很可能匹配到一些不相关的指令，从而造成误报</p>
-</li>
-</ol>
-<h3 id="Method："><a href="#Method：" class="headerlink" title="Method："></a>Method：</h3><img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/workflow.png" srcset="/img/loading.gif" lazyload class="" title="workflow">
+<h3 id="Threat-d-Model"><a href="#Threat-d-Model" class="headerlink" title="Threat(d) Model:"></a>Threat(d) Model:</h3><p>这里作者应该是要写威胁模型，结果一个小typo给写成了线程模型。</p>
+<img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/typo.png" srcset="/img/loading.gif" lazyload class="" title="typo">
 
-<p>针对这几个问题，packgenome做了针对性的改进：</p>
+<p>因为是远程fuzz，所以作者假设的威胁模型是进行注册过的合法设备用户，要不然应该很难过云端的校验（除非你能重绑定或者越权，当然这是后序的工作了）。</p>
+<h3 id="Challenges"><a href="#Challenges" class="headerlink" title="Challenges:"></a>Challenges:</h3><p>这里作者提出了这个工作的三大挑战：</p>
 <ol>
-<li><p>首先收集大量的加壳程序，并根据使用的加壳方法进行分类，收集每一种加壳方法下的程序的静态信息，节段信息，指令，基本块，熵等</p>
-</li>
-<li><p>针对每一种加壳方法，进行基因提取。例如，针对A类加壳方法，收集多个使用A类加壳方法加固的程序，然后使用动态二进制分析工具（作者使用了intel pin tool）来进行基本块级别的动态的信息搜集，包括执行的内存地址，指令字节码，以及label。动态收集的基本块集合与静态的基本块集合的交集就是packer程序部分（这部分用来做基因提取&#x2F;特征提取）。其次，将符合“写-然后-执行”的区域进行标记，这部分就是packer解包出来的真正的程序</p>
-</li>
-<li><p>将使用同一个加壳方法A的packer程序部分进行各种粒度的比对，最终相似的部分被认为是packer A的基因</p>
-</li>
-<li><p>用相似性分析的方法结合加壳方法A的基因生成YARA规则</p>
-</li>
-<li><p>再用一些反汇编的方法去除一些非常规的指令，也就是避免假阳性，因为作者这个工具主要针对的是x86&#x2F;x64这种变长指令集，所以需要看看是不是一个mismatch还是真实的反汇编指令。如图：</p>
-<img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/mismatch.png" srcset="/img/loading.gif" lazyload class="" title="mismatch"></li>
+<li>本次测试为黑盒测试，那么很难实现高的代码覆盖率，IoT设备对我们来说都是黑盒，根本就没法去监控。现有的方法一般是通过把App这边的控制指令进行更广泛的触发来追求设备端的代码覆盖率，有一些工作通过对安卓UI上的控件进行模拟点击或者重放，或者手动去点击，但这些方法都有点笨&#x2F;慢。</li>
+<li>现在很多控制App都是多合一App，也就是说base是拿java写的，上面的多个Mini-App都是拿JS写的（类似微信小程序这种的吧），这样就很难去追溯或者去构造一个fuzz包的数据源，JS还很容易去混淆，就是难上加难</li>
+<li>由于是黑盒fuzz，这些发出去的包都要经过云服务器，那势必云服务器会对这些非法的包进行一些过滤，那怎么判断是否进行了过滤从而提高效率呢？</li>
 </ol>
-<p>这种方法比SOTA各方面均胜出，0假阴性，低假阳性，有一些运行时的overhead增加。已经开源在<a target="_blank" rel="noopener" href="https://github.com/packgenome/PackGenome-Artifacts%EF%BC%8C%E9%87%8C%E9%9D%A2%E8%BF%98%E5%8C%85%E6%8B%AC%E4%BA%86%E5%90%84%E7%A7%8D%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E4%B8%8E%E5%9F%BA%E5%9B%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86">https://github.com/packgenome/PackGenome-Artifacts，里面还包括了各种加壳程序与基因的数据集</a></p>
-<h3 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away:"></a>Take away:</h3><p>看起来作者使用的intel pin tool是一个很不错的动态运行分析工具，我之前没有接触过，动态进行漏洞检测&#x2F;<strong>代码相似性检测</strong>的时候可以用一下这种方法，搜集一些动态运行时候的各种信息，理论上使用qemu应该也可以做到类似的功能，只是效率会降低。</p>
-<h3 id="为什么重新开始写"><a href="#为什么重新开始写" class="headerlink" title="为什么重新开始写"></a>为什么重新开始写</h3><p>最近越来越意识到每天的工作似乎都是一些工程方面的实践，虽也能学到一些新东西，但总不如读书来得系统（尤其是用了GPT以后的工作流，全都是细枝末节的输入）。所以打算多花时间进行一些输入，不论是文学类的书籍还是科学论文，都应该多进行输入。我想这样才能在日后有足够的知识储备进行输出。现在的目标是每天读一篇论文，先从安全四大顶会开始读起，根据自己的兴趣和与工作的相关程度我会进行精读或者略读，这篇文章是一篇略读文章。计划保持在每天读一篇，写一篇的状态，但如果某一天是在没有时间去读也没关系（毕竟上一次更新已经是23年5月还在找工作背面经的时候），take it easy～</p>
-<img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/lastupdate.png" srcset="/img/loading.gif" lazyload class="" title="lastupdate">
+<h3 id="Method："><a href="#Method：" class="headerlink" title="Method："></a>Method：</h3><img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/method.png" srcset="/img/loading.gif" lazyload class="" title="method">
 
+<ol>
+<li>使用了两种方法进行了控制指令的提取。第一种是从供应商官方的文档搜索引擎进行提取、第二种通过抓包手机App与服务器之间的通讯流量提取，然后手动修补一些遗漏的。</li>
+<li>找到可以进行数据变异的点。这里首先是要静态方法识别出Java层接受JS层输入的一个边界函数，再使用动态的方法确定精确的变异点。这里还用到了大语言模型来帮助过滤一些边界函数，从而可以确定真正的变异点。</li>
+<li>利用侧信道的方法来获取服务器的验证结果。如果一个包变异以后没有通过服务器的校验，那他就不会被转发到设备端，这样这个请求所花的时间就比较短，如果走了设备端时间比较长，所以可以使用时间信息来判断是否能通过服务器的校验。这里针对整数，浮点数，布尔变量，以及字符串设定了一些变异的规则。</li>
+<li>通过对IoT设备端端一些网络抓包，ping等等来判断设备是否挂掉了。</li>
+</ol>
+<h3 id="Evaluation："><a href="#Evaluation：" class="headerlink" title="Evaluation："></a>Evaluation：</h3><img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/evaluation.png" srcset="/img/loading.gif" lazyload class="" title="evaluation">
+
+<p>作者针对四个平台（小米，华为，京东，还有一个Tuya）的27个设备进行了分析（工作量确实够大），为了防止被云服务器封禁，他们的fuzz速度是10-15s一次，最终他们找到了11个漏洞，后面还做了一个case study和baseline study。</p>
+<img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/devices.png" srcset="/img/loading.gif" lazyload class="" title="devices">
+
+<p>看这一地的物联网设备，让我想起了N年前分析海尔摄像头的时光，那时候我家也差不多有10台摄像头排排站。由于之前在团队工作的经历，看这篇文章的时候还是非常亲切的，一些实验方法甚至文章用词，都让我觉得似乎在哪里见过。放一张当时的照片吧。</p>
+<img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/geekpwn.jpg" srcset="/img/loading.gif" lazyload class="" title="geekpwn">
 
               
             </div>
@@ -332,8 +331,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>PackGenome:Windows加壳程序分析</div>
-      <div>https://lihaoran8001.github.io/2025/01/08/PackGenome-Windows加壳程序分析/</div>
+      <div>RIoTFuzzer:远程IoT设备模糊测试方法</div>
+      <div>https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-远程IoT设备模糊测试方法/</div>
     </div>
     <div class="license-meta">
       
@@ -375,18 +374,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/" title="RIoTFuzzer:远程IoT设备模糊测试方法">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">RIoTFuzzer:远程IoT设备模糊测试方法</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/02/13/program-misuse/" title="program misuse">
-                        <span class="hidden-mobile">program misuse</span>
+                      <a href="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" title="PackGenome:Windows加壳程序分析">
+                        <span class="hidden-mobile">PackGenome:Windows加壳程序分析</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
