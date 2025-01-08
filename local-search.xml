@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>PackGenome:Windows加壳程序分析</title>
+    <link href="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/"/>
+    <url>/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/</url>
+    
+    <content type="html"><![CDATA[<h1 id="PackGenome（CCS’23"><a href="#PackGenome（CCS’23" class="headerlink" title="PackGenome（CCS’23)"></a>PackGenome（CCS’23)</h1><p>主流的加壳检测方法都是基于YARA规则的。用于检测的YARA规则之前主要是人工进行逆向分析生成的，文章提出了一种自动化生成YARA规则的检测程序加壳方法。从文章的名字可以看出，其利用了软件基因方法来识别壳程序，此方法在各个指标性表现均超过了SOTA。</p><h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation:"></a>Motivation:</h3><p>之前检测加壳程序的YARA规则主要由人工分析，专家经验生成，但是这种分析有3个弊端：</p><ol><li>人工付出的时间精力成本过高，一些复杂的加壳程序需要花费有经验的逆向分析人员N个人日（1&lt;N&lt;30)</li><li>规则的产生主要依赖于人为经验，但这种经验很容易被进行针对性对抗与伪装</li><li>如果有花指令，那么人为生成的YARA规则会产生较高的假阳性（人为产生的yara规则不够全面与完善）</li></ol><h3 id="Challenge"><a href="#Challenge" class="headerlink" title="Challenge:"></a>Challenge:</h3><p>提取加壳程序的YARA规则有如下困难：</p><ol><li><p>对于检测加壳程序的YARA规则生成，没有一个标准的guideline，人为经验不可靠（没有方法论）</p></li><li><p>这些生成的规则很可能匹配到一些不相关的指令，从而造成误报</p></li></ol><h3 id="Method："><a href="#Method：" class="headerlink" title="Method："></a>Method：</h3><img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/workflow.png" class="" title="workflow"><p>针对这几个问题，packgenome做了针对性的改进：</p><ol><li><p>首先收集大量的加壳程序，并根据使用的加壳方法进行分类，收集每一种加壳方法下的程序的静态信息，节段信息，指令，基本块，熵等</p></li><li><p>针对每一种加壳方法，进行基因提取。例如，针对A类加壳方法，收集多个使用A类加壳方法加固的程序，然后使用动态二进制分析工具（作者使用了intel pin tool）来进行基本块级别的动态的信息搜集，包括执行的内存地址，指令字节码，以及label。动态收集的基本块集合与静态的基本块集合的交集就是packer程序部分（这部分用来做基因提取&#x2F;特征提取）。其次，将符合“写-然后-执行”的区域进行标记，这部分就是packer解包出来的真正的程序</p></li><li><p>将使用同一个加壳方法A的packer程序部分进行各种粒度的比对，最终相似的部分被认为是packer A的基因</p></li><li><p>用相似性分析的方法结合加壳方法A的基因生成YARA规则</p></li><li><p>再用一些反汇编的方法去除一些非常规的指令，也就是避免假阳性，因为作者这个工具主要针对的是x86&#x2F;x64这种变长指令集，所以需要看看是不是一个mismatch还是真实的反汇编指令。如图：</p><img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/mismatch.png" class="" title="mismatch"></li></ol><p>这种方法比SOTA各方面均胜出，0假阴性，低假阳性，有一些运行时的overhead增加。已经开源在<a href="https://github.com/packgenome/PackGenome-Artifacts%EF%BC%8C%E9%87%8C%E9%9D%A2%E8%BF%98%E5%8C%85%E6%8B%AC%E4%BA%86%E5%90%84%E7%A7%8D%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E4%B8%8E%E5%9F%BA%E5%9B%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86">https://github.com/packgenome/PackGenome-Artifacts，里面还包括了各种加壳程序与基因的数据集</a></p><h3 id="Take-away"><a href="#Take-away" class="headerlink" title="Take away:"></a>Take away:</h3><p>看起来作者使用的intel pin tool是一个很不错的动态运行分析工具，我之前没有接触过，动态进行漏洞检测&#x2F;<strong>代码相似性检测</strong>的时候可以用一下这种方法，搜集一些动态运行时候的各种信息，理论上使用qemu应该也可以做到类似的功能，只是效率会降低。</p><h3 id="为什么重新开始写"><a href="#为什么重新开始写" class="headerlink" title="为什么重新开始写"></a>为什么重新开始写</h3><p>最近越来越意识到每天的工作似乎都是一些工程方面的实践，虽也能学到一些新东西，但总不如读书来得系统（尤其是用了GPT以后的工作流，全都是细枝末节的输入）。所以打算多花时间进行一些输入，不论是文学类的书籍还是科学论文，都应该多进行输入。我想这样才能在日后有足够的知识储备进行输出。现在的目标是每天读一篇论文，先从安全四大顶会开始读起，根据自己的兴趣和与工作的相关程度我会进行精读或者略读，这篇文章是一篇略读文章。计划保持在每天读一篇，写一篇的状态，但如果某一天是在没有时间去读也没关系（毕竟上一次更新已经是23年5月还在找工作背面经的时候），take it easy～</p><img src="/2025/01/08/PackGenome-Windows%E5%8A%A0%E5%A3%B3%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/lastupdate.png" class="" title="lastupdate">]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Binary Security</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>program misuse</title>
     <link href="/2023/02/13/program-misuse/"/>
     <url>/2023/02/13/program-misuse/</url>
@@ -97,7 +116,7 @@
     <link href="/2022/07/18/Crypto/"/>
     <url>/2022/07/18/Crypto/</url>
     
-    <content type="html"><![CDATA[<h3 id="Public-Key-Infrastructure-PKI"><a href="#Public-Key-Infrastructure-PKI" class="headerlink" title="Public-Key Infrastructure(PKI)"></a>Public-Key Infrastructure(PKI)</h3><p>PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。</p><p>世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如VeriSign的根证书就被放在操作系统中，如果我们开设了一个网站，我们可以生成一个包含有我们的域名的CSR(Certificate Signing Request)发给VeriSign（也可以使用SAN来包含多个域名），他会用自己的根证书和私钥来把我们的公钥证书签发给我们，那当用户访问我们的网站的时候，网站把公钥证书发给用户，用户的浏览器就可以使用操作系统中自带的VeriSign的根证书来验证我们这个公钥证书的真实性。</p><p>而MITM攻击的原理就是，如果我们可以将用户访问一个网站的流量导入到我们的服务器，我们就知道他要访问的网站是什么，我们就可以使用我们自己的公钥来替换掉原本网站的公钥，并发给用户。用户使用这个公钥加密一个secret，我们就可以拿自己的私钥来解密得到这个secret，再用原网站的公钥加密，发给那个网站。这个secret是用来加密后续的流量的，如果我们已经拿到了这个secret，那么我们就可以解密所有后续发送和接受的流量，我们还可以对流量进行篡改。</p><p>而PKI就是保证了，当用户收到（我们的）服务器发来的假公钥证书时，可以通过CA根证书来进行校验，从而察觉到这个证书不是真正想要访问的网站发来的证书。（如果我们把这个颁发假证书的CA根证书加入到操作系统&#x2F;浏览器的信任证书列表中，那我们就可以实现无痕的MITM攻击了，但是这需要用户配合&#x2F;或者用来向自己的操作系统中插入证书用来抓取流量）</p><h3 id="Transport-Layer-Security-TLS"><a href="#Transport-Layer-Security-TLS" class="headerlink" title="Transport Layer Security(TLS)"></a>Transport Layer Security(TLS)</h3><p>TLS协议是封装在TCP协议之上的一个协议，作为客户端，需要在建立TLS之前设置好一些context，例如CA证书的目录，是否进行证书校验，以及是否进行域名校验。作为服务器端，需要设置好服务器的公钥证书以及私钥。两方在握手阶段会协商好后续要采用的一系列加密&#x2F;MD的算法，以及利用非对称加密共享一个secret，作为后续对称加密的密钥使用。</p><h3 id="HeartBleed"><a href="#HeartBleed" class="headerlink" title="HeartBleed"></a>HeartBleed</h3><p>心脏滴血漏洞存在于openssl 1.0.1-1.0.1f版本中。TLS中维持连接的Heartbeat协议共有两种数据包。客户端发送一个HeartBeat Request，其中带有payload长度和一个特定的payload，当服务器接受到HeartBeat Request以后，会使用 <code>memcpy</code> 函数将接受到的payload再发送回客户端，来证明双方仍在连接中。问题出现在，在Request数据包中，声明的长度可以和实际的payload长度不同，而服务器并没有对这一现象进行校验，所以导致返回时将根据声明的长度额外的（声明长度-实际长度）内存数据发送给了客户端，这样导致保存在内存中的一些密钥，sessionID，用户名密码等等都泄漏。</p><p>其实很多的协议中都存在有长度位，作为客户端，我们其实可以伪造这个报文声明任意长度，如果服务器没有对声明的长度和实际的长度进行检查的话，就有可能会导致服务器端的越界访问等等，如果这个报文又被返回给了客户端，那么就会造成内存数据的泄漏。</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="Public-Key-Infrastructure-PKI"><a href="#Public-Key-Infrastructure-PKI" class="headerlink" title="Public-Key Infrastructure(PKI)"></a>Public-Key Infrastructure(PKI)</h3><p>PKI主要是用来防止MITM攻击的。当客户端想要和一个网站建立HTTPS链接时，网站会发给客户端一个他自己的公钥证书，PKI用来证明这个公钥证书确实是属于这个网站的，而不是其他人的。</p><p>世界上有很多Certificate Authority。在每一个操作系统&#x2F;浏览器中都内嵌了这些CA的根证书（他们的根证书是自签发的）。比如VeriSign的根证书就被放在操作系统中，如果我们开设了一个网站，我们可以生成一个包含有我们的域名的CSR(Certificate Signing Request)发给VeriSign（也可以使用SAN来包含多个域名），他会用自己的根证书和私钥来把我们的公钥证书签发给我们，那当用户访问我们的网站的时候，网站把公钥证书发给用户，用户的浏览器就可以使用操作系统中自带的VeriSign的根证书来验证我们这个公钥证书的真实性。</p><p>而MITM攻击的原理就是，如果我们可以将用户访问一个网站的流量导入到我们的服务器，我们就知道他要访问的网站是什么，我们就可以使用我们自己的公钥来替换掉原本网站的公钥，并发给用户。用户使用这个公钥加密一个secret，我们就可以拿自己的私钥来解密得到这个secret，再用原网站的公钥加密，发给那个网站。这个secret是用来加密后续的流量的，如果我们已经拿到了这个secret，那么我们就可以解密所有后续发送和接受的流量，我们还可以对流量进行篡改。</p><p>而PKI就是保证了，当用户收到（我们的）服务器发来的假公钥证书时，可以通过CA根证书来进行校验，从而察觉到这个证书不是真正想要访问的网站发来的证书。（如果我们把这个颁发假证书的CA根证书加入到操作系统&#x2F;浏览器的信任证书列表中，那我们就可以实现无痕的MITM攻击了，但是这需要用户配合&#x2F;或者用来向自己的操作系统中插入证书用来抓取流量）</p><h3 id="Transport-Layer-Security-TLS"><a href="#Transport-Layer-Security-TLS" class="headerlink" title="Transport Layer Security(TLS)"></a>Transport Layer Security(TLS)</h3><p>TLS协议是封装在TCP协议之上的一个协议，作为客户端，需要在建立TLS之前设置好一些context，例如CA证书的目录，是否进行证书校验，以及是否进行域名校验。作为服务器端，需要设置好服务器的公钥证书以及私钥。两方在握手阶段会协商好后续要采用的一系列加密&#x2F;MD的算法，以及利用非对称加密共享一个secret，作为后续对称加密的密钥使用。</p><h3 id="HeartBleed"><a href="#HeartBleed" class="headerlink" title="HeartBleed"></a>HeartBleed</h3><p>心脏滴血漏洞存在于openssl 1.0.1-1.0.1f版本中。TLS中维持连接的Heartbeat协议共有两种数据包。客户端发送一个HeartBeat Request，其中带有payload长度和一个特定的payload，当服务器接受到HeartBeat Request以后，会使用 <code>memcpy</code> 函数将接受到的payload再发送回客户端，来证明双方仍在连接中。问题出现在，在Request数据包中，声明的长度可以和实际的payload长度不同，而服务器并没有对这一现象进行校验，所以导致返回时将根据声明的长度额外的（声明长度-实际长度）内存数据发送给了客户端，这样导致保存在内存中的一些密钥，sessionID，用户名密码等等都泄漏。</p><p>其实很多的协议中都存在有长度位，作为客户端，我们其实可以伪造这个报文声明任意长度，如果服务器没有对声明的长度和实际的长度进行检查的话，就有可能会导致服务器端的越界访问等等，如果这个报文又被返回给了客户端，那么就会造成内存数据的泄漏。</p><h3 id="Pseudo-random-number-generation"><a href="#Pseudo-random-number-generation" class="headerlink" title="Pseudo random number generation"></a>Pseudo random number generation</h3><p><del>PS: weakness of transCL</del></p><p><del>标题 system design</del></p><p><del>model parallel -&gt; split computing (vertical)</del></p><p><del>privacy-preserving computing&#x2F;learning</del></p><p><del>ENCRUST not intergrate</del> </p><p><del>can be applied for all CL</del></p><p><del>fig + ref{}</del></p><p><del>fig25 rm</del></p><p><del>fig 27 bar tb1 rm</del></p><p><del>fig29 x y_send encrypted signal</del></p><p><del>fig rm title</del></p><p><del>fig -&gt; table fig31</del></p><p><del>fig32 x …</del></p><p><del>our method ….</del></p><p><del>talk the comm overhead cons argurement where to split</del></p><p>diff dataset</p><p>talk with channel error</p>]]></content>
     
     
     
@@ -207,6 +226,19 @@
   
   
   <entry>
+    <title>Hello World</title>
+    <link href="/2022/04/16/hello-world/"/>
+    <url>/2022/04/16/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>XSS vulnerability</title>
     <link href="/2022/04/15/XSS/"/>
     <url>/2022/04/15/XSS/</url>
@@ -220,19 +252,6 @@
       <tag>Web Security</tag>
       
     </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="/2022/04/15/hello-world/"/>
-    <url>/2022/04/15/hello-world/</url>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-    
-    
     
   </entry>
   
