@@ -16,12 +16,12 @@
   <meta name="author" content="Haoran Li">
   <meta name="keywords" content="">
   
-    <meta name="description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能">
+    <meta name="description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的启蒙老师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RIoTFuzzer:远程IoT设备模糊测试方法">
 <meta property="og:url" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="1nt3rva1&#39;s personal blog">
-<meta property="og:description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能">
+<meta property="og:description" content="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)这篇文章是刘凯铮博士和本科时候的启蒙老师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。 本文章主要讲的是针对IoT设备（文中主要针对的是家用的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/typo.png">
 <meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/method.png">
@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/devices.png">
 <meta property="og:image" content="https://lihaoran8001.github.io/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/geekpwn.jpg">
 <meta property="article:published_time" content="2025-01-08T02:55:02.000Z">
-<meta property="article:modified_time" content="2025-01-08T07:10:32.669Z">
+<meta property="article:modified_time" content="2025-01-09T05:56:12.253Z">
 <meta property="article:author" content="Haoran Li">
 <meta property="article:tag" content="Binary Security">
 <meta name="twitter:card" content="summary_large_image">
@@ -277,7 +277,7 @@
             
             <div class="markdown-body">
               
-              <h1 id="RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24"><a href="#RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24" class="headerlink" title="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)"></a>RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)</h1><p>这篇文章是刘凯铮博士和本科时候的恩师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。</p>
+              <h1 id="RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24"><a href="#RIoTFuzzer-Companion-App-Assisted-Remote-Fuzzing-for-Detecting-Vulnerabilities-in-IoT-Devices-CCS’24" class="headerlink" title="RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)"></a>RIoTFuzzer: Companion App Assisted Remote Fuzzing for Detecting Vulnerabilities in IoT Devices (CCS’24)</h1><p>这篇文章是刘凯铮博士和本科时候的启蒙老师凌振老师团队所做，之前有过IoT设备的研究经历，和当前的工作内容也相对符合，所以这篇适合进行精读。</p>
 <p>本文章主要讲的是针对IoT设备（文中主要针对的是家用的智能家居设备如灯泡，智能插座，摄像头等等）进行协议层面的fuzz方法。与本地的fuzz不同，文章主要针对的是远程App控制命令的fuzz，也就是说，这些fuzz的报文都是由控制App发出，通过了服务器进行转发，再发送至设备上，所以叫R(emote) IoTFuzzer。这其中势必会用到针对安卓App的逆向分析，这里作者发现很多App都是用了基于JavaScript的mini-App，这当然就增加了逆向的难度（传统的针对java的方法没法直接用在这里）。最终作者通过对27个IoT设备进行模糊测试，找到了11个0day漏洞。</p>
 <h3 id="Motivation："><a href="#Motivation：" class="headerlink" title="Motivation："></a>Motivation：</h3><ol>
 <li>当前通过控制App针对IoT设备的fuzz方法都是在本地进行的，也就是在同一个局域网内部进行fuzz；但作者发现很多的IoT设备只能通过远端服务器进行访问。有一些IoT设备有本地局域网和远程两种控制方式，但他们在设备端的实现是不同的，所以远程访问是一个很值得去研究的范畴。</li>
@@ -295,6 +295,7 @@
 </ol>
 <h3 id="Method："><a href="#Method：" class="headerlink" title="Method："></a>Method：</h3><img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/method.png" srcset="/img/loading.gif" lazyload class="" title="method">
 
+
 <ol>
 <li>使用了两种方法进行了控制指令的提取。第一种是从供应商官方的文档搜索引擎进行提取、第二种通过抓包手机App与服务器之间的通讯流量提取，然后手动修补一些遗漏的。</li>
 <li>找到可以进行数据变异的点。这里首先是要静态方法识别出Java层接受JS层输入的一个边界函数，再使用动态的方法确定精确的变异点。这里还用到了大语言模型来帮助过滤一些边界函数，从而可以确定真正的变异点。</li>
@@ -303,7 +304,7 @@
 </ol>
 <h3 id="Evaluation："><a href="#Evaluation：" class="headerlink" title="Evaluation："></a>Evaluation：</h3><img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/evaluation.png" srcset="/img/loading.gif" lazyload class="" title="evaluation">
 
-<p>作者针对四个平台（小米，华为，京东，还有一个Tuya）的27个设备进行了分析（工作量确实够大），为了防止被云服务器封禁，他们的fuzz速度是10-15s一次，最终他们找到了11个漏洞，后面还做了一个case study和baseline study。</p>
+<p>作者针对四个平台（小米，华为，京东，还有一个Tuya）的27个设备进行了分析（工作量确实够大，这种带逆向和人为分析的，似乎只有大工作量才算足够的创新），为了防止被云服务器封禁，他们的fuzz速度是10-15s一次，最终他们找到了11个漏洞，后面还做了一个case study和baseline study。</p>
 <img src="/2025/01/08/RIoTFuzzer-%E8%BF%9C%E7%A8%8BIoT%E8%AE%BE%E5%A4%87%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95/devices.png" srcset="/img/loading.gif" lazyload class="" title="devices">
 
 <p>看这一地的物联网设备，让我想起了N年前分析海尔摄像头的时光，那时候我家也差不多有10台摄像头排排站。由于之前在团队工作的经历，看这篇文章的时候还是非常亲切的，一些实验方法甚至文章用词，都让我觉得似乎在哪里见过。放一张当时的照片吧。</p>
